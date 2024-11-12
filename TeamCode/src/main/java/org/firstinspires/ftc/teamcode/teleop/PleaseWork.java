@@ -8,8 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.component.Intake;
 import org.firstinspires.ftc.teamcode.component.Outtake;
-import org.firstinspires.ftc.teamcode.component.localizer.Localizer;
-import org.firstinspires.ftc.teamcode.core.Jerry;
+import org.firstinspires.ftc.teamcode.core.Pika;
 
 @TeleOp
 public class PleaseWork extends LinearOpMode {
@@ -32,8 +31,8 @@ public class PleaseWork extends LinearOpMode {
                 driverOp, GamepadKeys.Button.B
         );
 
-        Jerry.init(hardwareMap);
-        Jerry.movementPower = 0.6;
+        Pika.init(hardwareMap, this);
+        Pika.movementPower = 0.6;
 
         waitForStart();
         while (opModeIsActive()) {
@@ -43,56 +42,56 @@ public class PleaseWork extends LinearOpMode {
             double driveX = Math.pow(-gamepad2.left_stick_y, 3);
             double magnitude = Math.hypot(driveX, driveY);
             double theta = Math.toDegrees(Math.atan2(driveY, driveX));
-            double movementPower = Jerry.movementPower;
-            Jerry.drivetrain.drive(magnitude, theta, driveTurn, movementPower);
+            double movementPower = Pika.movementPower;
+            Pika.drivetrain.drive(magnitude, theta, driveTurn, movementPower);
 
             // Outtake and Intake stuff
             if (gamepad1.dpad_up) {
-                Jerry.outtakeSlides.goUp();
+                Pika.outtakeSlides.goUp();
             }
             else if (gamepad1.dpad_down) {
-                Jerry.outtakeSlides.goDown();
+                Pika.outtakeSlides.goDown();
             }
             else {
-                Jerry.outtakeSlides.stopSlides();
+                Pika.outtakeSlides.stopSlides();
             }
 
             if (gamepad1.right_bumper) {
-                Jerry.intake.setPivotPosition(Intake.PivotPosition.Down.getPosition());
-                Jerry.intake.extend();
+                Pika.intake.setPivotPosition(Intake.PivotPosition.Down.getPosition());
+                Pika.intake.extend();
             }
             else if (gamepad1.left_bumper) {
-                Jerry.intake.retract();
+                Pika.intake.retract();
             }
 
             if (xReader.wasJustReleased()) {
                 if (pivotDown)
-                    Jerry.intake.setPivotPosition(Intake.PivotPosition.Up.getPosition());
+                    Pika.intake.setPivotPosition(Intake.PivotPosition.Up.getPosition());
                 else
-                    Jerry.intake.setPivotPosition(Intake.PivotPosition.Down.getPosition());
+                    Pika.intake.setPivotPosition(Intake.PivotPosition.Down.getPosition());
                 pivotDown = !pivotDown;
             }
 
             if (bReader.wasJustReleased()) {
-                Jerry.intake.setPivotPosition(Intake.PivotPosition.Up.getPosition());
-                Jerry.intake.setExtendoPostion(Intake.ExtensionPosition.RETRACTED.getPosition());
+                Pika.intake.setPivotPosition(Intake.PivotPosition.Up.getPosition());
+                Pika.intake.setExtendoPostion(Intake.ExtensionPosition.RETRACTED.getPosition());
             }
 
             if (gamepad1.y) {
-                Jerry.outtake.liftArm();
+                Pika.outtake.liftArm();
             }
 
             if (aReader.wasJustReleased()) {
-                    Jerry.outtake.setArmPosition(Outtake.ArmPos.LOAD.getPos());
+                    Pika.outtake.setArmPosition(Outtake.ArmPos.LOAD.getPos());
             }
             if (gamepad1.dpad_left) {
-                Jerry.intake.rollerIn();
+                Pika.intake.rollerIn();
             }
             else if(gamepad1.dpad_right) {
-                Jerry.intake.rollerOut();
+                Pika.intake.rollerOut();
             }
             else {
-                Jerry.intake.rollerStop();
+                Pika.intake.rollerStop();
             }
 
 

@@ -6,35 +6,19 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.norm
 
 public class SimplePath {
 
-    Point[] waypoints;
-
-    double pow;
-    double pow2;
-    double pow3;
-    double pow4;
-
+    PathPoint[] waypoints;
     double heading;
 
-    private Point[] curvePoints;
-    private Point[] curveDerivatives;
-    private double[] curveHeadings;
-
-    static double tIncrement = MotionPlanner.tIncrement;
-
-
-    public SimplePath(double heading, Point... waypoints) {
+    public SimplePath(double heading, PathPoint... waypoints) {
         this.waypoints = waypoints;
         this.heading = normalizeDegrees(heading);
     }
 
-    public SimplePath(){}
-
-
-    public SimplePath(Point... waypoints) {
+    public SimplePath(PathPoint... waypoints) {
         this(0, waypoints);
     }
 
-    public Point[] getWaypoints() {
+    public PathPoint[] getWaypoints() {
         return waypoints;
     }
 

@@ -5,10 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-import org.firstinspires.ftc.teamcode.core.Jerry;
-import org.firstinspires.ftc.teamcode.pathing.Bezier;
+import org.firstinspires.ftc.teamcode.core.Pika;
 import org.firstinspires.ftc.teamcode.pathing.Point;
-import org.firstinspires.ftc.teamcode.pathing.RobotPose;
 
 @Autonomous
 public class MainAuto extends LinearOpMode {
@@ -24,7 +22,7 @@ public class MainAuto extends LinearOpMode {
     Point sample3 = new Point(0, 0);
     @Override
     public void runOpMode() throws InterruptedException {
-        Jerry.init(hardwareMap);
+        Pika.init(hardwareMap, this);
         ElapsedTime timer;
         timer = new ElapsedTime();
         boolean start = false;
@@ -35,10 +33,10 @@ public class MainAuto extends LinearOpMode {
                 start = true;
             }
             if (timer.seconds() <= 1.2) {
-                Jerry.drivetrain.drive(1, -90, 0, 0.5);
+                Pika.drivetrain.drive(1, -90, 0, 0.5);
             }
             else {
-                Jerry.drivetrain.drive(0, 0, 0, 0);
+                Pika.drivetrain.drive(0, 0, 0, 0);
             }
 
         }

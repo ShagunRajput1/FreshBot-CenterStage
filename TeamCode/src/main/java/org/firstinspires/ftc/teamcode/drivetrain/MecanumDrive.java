@@ -48,15 +48,19 @@ public class MecanumDrive implements Drivetrain {
         backLeft = hardwareMap.get(DcMotorEx.class, "lb");
         backRight = hardwareMap.get(DcMotorEx.class, "rb");
 
-//        backLeft.setDirection(DcMotorEx.Direction.REVERSE);
-//        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft.setDirection(DcMotorEx.Direction.REVERSE);
+        frontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 //        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
-frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+//frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
         frontLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         backLeft.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
 
@@ -108,7 +112,7 @@ frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft.setPower(movementPower*backLeftPower);
         backRight.setPower(movementPower*backRightPower);
 
-        telemetry = "" + frontLeftPower + " \n" + frontRightPower + " \n" + backLeftPower + " \n" + backRightPower;
+        telemetry = "FrontLeft: " + frontLeftPower + " \nFrontRight: " + frontRightPower + " \nBackLeft: " + backLeftPower + " \nBackRight" + backRightPower;
     }
 
     @Override
@@ -208,6 +212,8 @@ frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         frontRightPower = (magnitude * sin / maxMovement + driveTurn);
         backLeftPower = (magnitude * sin / maxMovement - driveTurn);
         backRightPower = (magnitude * cos / maxMovement + driveTurn);
+        telemetry = "FrontLeft: " + frontLeftPower + " \nFrontRight: " + frontRightPower + " \nBackLeft: " + backLeftPower + " \nBackRight" + backRightPower;
+
 
     }
 

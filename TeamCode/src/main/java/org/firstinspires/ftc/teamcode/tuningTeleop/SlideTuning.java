@@ -5,18 +5,16 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.component.OuttakeSlides;
-import org.firstinspires.ftc.teamcode.core.Jerry;
+import org.firstinspires.ftc.teamcode.core.Pika;
 
 @TeleOp
 public class SlideTuning extends LinearOpMode {
     boolean up = false;
     @Override
     public void runOpMode() throws InterruptedException {
-        Jerry.init(hardwareMap);
+        Pika.init(hardwareMap, this);
         waitForStart();
         GamepadEx driverOp = new GamepadEx(gamepad1);
         ToggleButtonReader xReader = new ToggleButtonReader(
@@ -26,26 +24,26 @@ public class SlideTuning extends LinearOpMode {
         while (opModeIsActive()) {
             if (xReader.wasJustReleased()) {
                 if (!up)
-                    Jerry.outtakeSlides.setTargetPosition(OuttakeSlides.TurnValue.INTAKE.getTicks());
+                    Pika.outtakeSlides.setTargetPosition(OuttakeSlides.TurnValue.INTAKE.getTicks());
                 else
-                    Jerry.outtakeSlides.setTargetPosition(OuttakeSlides.TurnValue.BUCKET2.getTicks());
+                    Pika.outtakeSlides.setTargetPosition(OuttakeSlides.TurnValue.BUCKET2.getTicks());
                 up = !up;
             }
 
             if (gamepad1.dpad_up) {
-                Jerry.outtakeSlides.goUp();
+                Pika.outtakeSlides.goUp();
             }
             else if (gamepad1.dpad_down) {
-                Jerry.outtakeSlides.goDown();
+                Pika.outtakeSlides.goDown();
             }
             else {
-                Jerry.outtakeSlides.stopSlides();
+                Pika.outtakeSlides.stopSlides();
             }
             xReader.readValue();
 //            Jerry.outtakeSlides.update();
-            telemetry.addData("Target Position: ", Jerry.outtakeSlides.getTargetPosition());
-            telemetry.addData("Current Pos: ", Jerry.outtakeSlides.getCurrentPosition());
-            telemetry.addData("Power: ", Jerry.outtakeSlides.getPW());
+            telemetry.addData("Target Position: ", Pika.outtakeSlides.getTargetPosition());
+            telemetry.addData("Current Pos: ", Pika.outtakeSlides.getCurrentPosition());
+            telemetry.addData("Power: ", Pika.outtakeSlides.getPW());
             telemetry.update();
         }
     }

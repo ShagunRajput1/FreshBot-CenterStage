@@ -14,6 +14,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import java.util.List;
 
 public class Camlight {
+    private final double sampleHeight = 3.8;
+    private final double sampleWidth = 8.9;
+
+    private final double maxWHRatio = 2.275;
+    private final double minWHRatio = 0.44;
     private Limelight3A limelight;
     public List<List<Double>> corners;
 
@@ -54,7 +59,26 @@ public class Camlight {
                 return angle;
             }
         }
-        return 0;
+        return -1;
+    }
+
+    public double getSampleOrientationNN() {
+        limelight.pipelineSwitch(5);
+        LLResult result = limelight.getLatestResult();
+        double sampleHeight = 8.9;
+        double sampleWidth = 3.8;
+        if (result!=null && result.isValid() && result.getDetectorResults().size()>0) {
+            LLResultTypes.DetectorResult detectorResult = result.getDetectorResults().get(0);
+            corners = detectorResult.getTargetCorners();
+            if (corners.size() == 4) {
+                contourWidth = Math.abs(corners.get(0).get(0) - corners.get(1).get(0));
+                contourHeight = Math.abs(corners.get(0).get(1) - corners.get(2).get(1));
+                double widthHeightRatio = contourWidth/contourHeight;
+                return Math.abs(Math.toDegrees(Math.atan((sampleHeight - (sampleWidth*widthHeightRatio))/
+                        ((sampleHeight*widthHeightRatio)-sampleWidth))));
+            }
+        }
+        return -1;
     }
 
 

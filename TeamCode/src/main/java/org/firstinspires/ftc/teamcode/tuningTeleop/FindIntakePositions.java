@@ -3,52 +3,52 @@ package org.firstinspires.ftc.teamcode.tuningTeleop;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.core.Jerry;
+import org.firstinspires.ftc.teamcode.core.Pika;
 
 @TeleOp
 public class FindIntakePositions extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        Jerry.init(hardwareMap);
+        Pika.init(hardwareMap, this);
         waitForStart();
 
         while (opModeIsActive()) {
             if (gamepad1.right_bumper) {
-                Jerry.intake.extend();
+                Pika.intake.extend();
             }
             else if (gamepad1.left_bumper) {
-                Jerry.intake.retract();
+                Pika.intake.retract();
             }
             if (gamepad1.a) {
-                Jerry.intake.incrementPivot();
+                Pika.intake.incrementPivot();
             }
             else if (gamepad1.b) {
-                Jerry.intake.decrementPivot();
+                Pika.intake.decrementPivot();
             }
             if (gamepad1.dpad_left) {
-                Jerry.intake.rollerIn();
+                Pika.intake.rollerIn();
             }
             else if (gamepad1.dpad_right) {
-                Jerry.intake.rollerOut();
+                Pika.intake.rollerOut();
             }
             else {
-                Jerry.intake.rollerStop();
+                Pika.intake.rollerStop();
             }
 
             if (gamepad1.dpad_up) {
-                Jerry.outtake.liftArm();
+                Pika.outtake.liftArm();
             }
             else if (gamepad1.dpad_down) {
-                Jerry.outtake.lowerArm();
+                Pika.outtake.lowerArm();
             }
-            Jerry.outtakeSlides.holdSlide();
-            telemetry.addData("Current Pos: ", Jerry.outtakeSlides.getCurrentPosition());
-            telemetry.addData("Power: ", Jerry.outtakeSlides.getPW());
+            Pika.outtakeSlides.holdSlide();
+            telemetry.addData("Current Pos: ", Pika.outtakeSlides.getCurrentPosition());
+            telemetry.addData("Power: ", Pika.outtakeSlides.getPW());
 
 
-            telemetry.addData("Extendo pos: ", Jerry.intake.getPosition());
-            telemetry.addData("ArmPos: ", Jerry.outtake.getArmPosition());
-            telemetry.addData("Dist sensor: ", Jerry.intake.getDistance());
+            telemetry.addData("Extendo pos: ", Pika.intake.getPosition());
+            telemetry.addData("ArmPos: ", Pika.outtake.getArmPosition());
+            telemetry.addData("Dist sensor: ", Pika.intake.getDistance());
             telemetry.update();
         }
     }
