@@ -4,10 +4,18 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.internal.ui.LocalByRefIntentExtraHolder;
+import org.firstinspires.ftc.teamcode.commandBase.DepositSample;
+import org.firstinspires.ftc.teamcode.commandBase.Grab;
+import org.firstinspires.ftc.teamcode.commandBase.IntakeSample;
+import org.firstinspires.ftc.teamcode.commandBase.SlidesMove;
 import org.firstinspires.ftc.teamcode.commandSystem.FollowTrajectory;
+import org.firstinspires.ftc.teamcode.commandSystem.RunCommand;
 import org.firstinspires.ftc.teamcode.commandSystem.SequentialCommand;
 import org.firstinspires.ftc.teamcode.commandSystem.Wait;
+import org.firstinspires.ftc.teamcode.component.Claw;
+import org.firstinspires.ftc.teamcode.component.OuttakeSlides;
 import org.firstinspires.ftc.teamcode.component.localizer.Localizer;
+import org.firstinspires.ftc.teamcode.core.Pika;
 import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.drivetrain.MecanumDrive;
 import org.firstinspires.ftc.teamcode.pathing.Bezier;
@@ -24,37 +32,72 @@ public class PathFollowerTest extends LinearOpMode {
     Bezier testPath;
     Bezier path2;
     Bezier path3;
+    Bezier bucket;
+    Bezier sample1;
+    Bezier sample2;
     MotionPlannerEdit follower;
+    public static Point bucketDeposit = new Point(15, 34.5);
     @Override
     public void runOpMode() throws InterruptedException {
-        Localizer localizer = new Localizer(this, hardwareMap);
-        MecanumDrive drivetrain = new MecanumDrive(hardwareMap);
-        follower = new MotionPlannerEdit(drivetrain, localizer, hardwareMap);
+        Pika.init(hardwareMap, this, false);
+        follower = new MotionPlannerEdit(Pika.drivetrain, Pika.localizer, hardwareMap);
 
         while (opModeInInit()) {
-            testPath = new Bezier(-90,
-                    new Point(22, 10),
-                    new Point(34, 18),
-                    new Point(75, 18),
-                    new Point(75, 20));
+            bucket = new Bezier(-45,
+                    new Point(0, 0),
+                    bucketDeposit);
+            sample1 = new Bezier(0,
+                    bucket.getEndPoint(),
+                    new Point(25, 31.2)
+            );
+            sample2 = new Bezier(0,
+                    bucket.getEndPoint(),
+                    new Point(25, 41.5)
+            );
 
-            path2 = new Bezier(45,
-                    testPath.getEndPoint(),
-                    new Point(60, -15));
 
-            path3 = new Bezier(0,
-                    path2.getEndPoint(),
-                    new Point(0, 0));
+
 
         }
 
         SequentialCommand commandRunner = new SequentialCommand(
-                new FollowTrajectory(follower, testPath),
+                new FollowTrajectory(follower, bucket),
+                new DepositSample(OuttakeSlides.TurnValue.BUCKET2.getTicks()),
+                new Wait(1000),
+                new RunCommand(()->Pika.claw.setClaw(Claw.ClawPosition.OPEN.getPosition())),
+                new Wait(1000),
+                new RunCommand(()->Pika.claw.setArmPitch(Claw.ArmPitch.DOWN.getPosition())),
+                new IntakeSample(),
+                new FollowTrajectory(follower, sample1),
+                new Grab(),
+////
+////                // Add something here
+////
+                new FollowTrajectory(follower, new Bezier(-45,
+                    new Point(Pika.localizer.getX(), Pika.localizer.getY()),
+                    bucketDeposit
+                )),
+                new DepositSample(OuttakeSlides.TurnValue.BUCKET2.getTicks()),
+                new RunCommand(()->Pika.claw.setClaw(Claw.ClawPosition.OPEN.getPosition())),
+                new Wait(5000),
+                new RunCommand(()->Pika.claw.setArmPitch(Claw.ArmPitch.DOWN.getPosition())),
+                new IntakeSample(),
+                new FollowTrajectory(follower, sample2)
+
+//                // Add something here
+//
+//                new FollowTrajectory(follower, new Bezier(-45,
+//                        new Point(Pika.localizer.getX(), Pika.localizer.getY()),
+//                        bucketDeposit
+//                )),
+//                new DepositSample(OuttakeSlides.TurnValue.BUCKET2.getTicks()),
+//                new RunCommand(()->Pika.claw.setClaw(Claw.ClawPosition.OPEN.getPosition())),
 //                new Wait(5000),
-                new FollowTrajectory(follower, path2),
-//                new Wait(2000),
-                new FollowTrajectory(follower, path3)
+//                new RunCommand(()->Pika.claw.setArmPitch(Claw.ArmPitch.DOWN.getPosition())),
+
         );
+
+
         commandRunner.init();
         waitForStart();
 
@@ -63,9 +106,16 @@ public class PathFollowerTest extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested()) {
             commandRunner.update();
             follower.update();
+            Pika.arm.update();
+            if (Pika.arm.isFinished())
+                Pika.outtakeSlides.update();
+            else {
+                Pika.outtakeSlides.freeMove();
+            }
             telemetry.addData("", follower.getTelemetry());
+            telemetry.addData("", Pika.arm.getTelemetry());
             telemetry.update();
-            localizer.update();
+            Pika.localizer.update();
         }
     }
 }

@@ -19,6 +19,7 @@ public class LimeLightTestNN extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
             String corners = "";
+//            limelight.getSampleOrientation();
             double angle = limelight.getSampleOrientationNN();
             if (angle == -1) {
                 telemetry.addData("No Sample Detected", "");
@@ -33,6 +34,9 @@ public class LimeLightTestNN extends LinearOpMode {
                     }
                 }
                 telemetry.addData("Corners: ", corners);
+                telemetry.addData("AllCorners: ", limelight.corners);
+                telemetry.addData("Width: ", limelight.contourWidth);
+                telemetry.addData("Width: ", limelight.contourHeight);
             }
             telemetry.update();
         }

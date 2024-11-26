@@ -24,9 +24,9 @@ public class LimelightTest extends LinearOpMode {
                 telemetry.addData("No Sample Detected", "");
             }
             else {
-                telemetry.addData("Angle: ", limelight.getSampleOrientation());
-                telemetry.addData("Y: ", limelight.deltaY);
-                telemetry.addData("X: ", limelight.deltaX);
+                telemetry.addData("Angle: ", angle);
+                telemetry.addData("Delta Y: ", limelight.deltaY);
+                telemetry.addData("Delta X: ", limelight.deltaX);
                 if (limelight.cornerIndices != null) {
                     corners= corners.concat("[");
                     for (int i = 0; i < 4; i++) {
@@ -40,6 +40,7 @@ public class LimelightTest extends LinearOpMode {
                     }
                 }
                 telemetry.addData("Corners In Order: ", corners);
+                telemetry.addData("TiltLeft: ", limelight.tiltedLeft);
             }
             telemetry.update();
         }

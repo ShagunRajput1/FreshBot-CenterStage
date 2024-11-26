@@ -10,7 +10,7 @@ public class SequentialCommand extends Command {
 
     private int index;
 
-    private boolean finished = false;
+    private boolean finished = true;
 
     public SequentialCommand(Command... commandList){
         this.commandList = commandList;

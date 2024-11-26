@@ -22,7 +22,7 @@ public class MainAuto extends LinearOpMode {
     Point sample3 = new Point(0, 0);
     @Override
     public void runOpMode() throws InterruptedException {
-        Pika.init(hardwareMap, this);
+        Pika.init(hardwareMap, this, false);
         ElapsedTime timer;
         timer = new ElapsedTime();
         boolean start = false;

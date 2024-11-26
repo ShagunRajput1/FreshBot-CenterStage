@@ -5,20 +5,29 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.component.localizer.Localizer;
 import org.firstinspires.ftc.teamcode.core.Pika;
+import org.firstinspires.ftc.teamcode.pathing.MotionPlannerEdit;
 
 @TeleOp(name="Testing")
 public class Testing extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        Pika.init(hardwareMap, this);
+        Pika.init(hardwareMap, this, false);
         Pika.movementPower = 0.55;
 //        Localizer localizer = new Localizer(this, hardwareMap);
         waitForStart();
         while (opModeIsActive()) {
             // Movement
-            double driveTurn = Math.pow(-gamepad2.right_stick_x, 3);
+            double driveTurn = Math.pow(-gamepad2.right_stick_x, 1);
+
+            driveTurn = (Math.abs(driveTurn) > 0) ?
+                    (driveTurn + Math.signum(driveTurn)* MotionPlannerEdit.kStatic_Turn) : 0;
             double driveY = Math.pow(-gamepad2.left_stick_x, 1);
+            driveY = (Math.abs(driveY) > 0) ?
+                    driveY + Math.signum(driveY)*MotionPlannerEdit.kStatic_Y : 0;
             double driveX = Math.pow(-gamepad2.left_stick_y, 1);
+            driveX = (Math.abs(driveX) > 0) ?
+                    driveX + Math.signum(driveX)*MotionPlannerEdit.kStatic_X : 0;
+
             double magnitude = Math.hypot(driveX, driveY);
             double theta = Math.toDegrees(Math.atan2(driveY, driveX));
             double movementPower = Pika.movementPower;

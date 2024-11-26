@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.util.TweakedPID;
 @Config
 public class MotionPlannerEdit {
 
-    private Bezier spline;
+    private Path spline;
     private double targetHeading;
 
     private MecanumDrive drive;
@@ -28,9 +28,9 @@ public class MotionPlannerEdit {
 
     //    private PIDController translationalControlEnd = new PIDController(0.022,0.001,0.03);
 //    public static PIDController translationalControlEnd = new PIDController(0.025,0.02,0.1);
-    public static TweakedPID translationalControlEndX = new TweakedPID(0.0015,0.0015,0.01);
+    public static TweakedPID translationalControlEndX = new TweakedPID(0.02,0.0015,0.01);
     public static TweakedPID translationalControlEndY = new TweakedPID(0.03, 0, 0);
-    public static TweakedPID headingControlEnd = new TweakedPID(0.01, 0.0001, 0); // hope
+    public static TweakedPID headingControlEnd = new TweakedPID(0.018, 0.0001, 0); // hope
 
 
     private int index;
@@ -65,9 +65,9 @@ public class MotionPlannerEdit {
     double radius;
     public final static double THE_HOLY_CONSTANT = 0.0006; //0.001
 
-    public static double kStatic_X = 0.08; //.19
-    public static double kStatic_Y = 0.14; //.19
-    public static double kStatic_Turn = 0.085; //.19
+    public static double kStatic_X = 0.1; //.19
+    public static double kStatic_Y = 0.2; //.19
+    public static double kStatic_Turn = 0.1; //.19
     double ac;
 
     double numLoops;
@@ -129,7 +129,7 @@ public class MotionPlannerEdit {
         index = 0;
     }
 
-    public void startTrajectory(Bezier spline) {
+    public void startTrajectory(Path spline) {
         this.spline = spline;
         reset();
     }
@@ -139,47 +139,46 @@ public class MotionPlannerEdit {
 //        reset();
 //    }
 
-    public Bezier getSpline(){
+    public Path getSpline(){
         return spline;
     }
 
 
     public String getTelemetry(){
         return "Index: " + index +
-//                "\n Targetheading: " + targetHeading +
-//                "\n Derivative: " + derivative.getX() + ", " + derivative.getY() + " " +
-//                "\n Derivative: " + Math.hypot(derivative.getX(), derivative.getY()) + " " +
-//                "\n Heading Error: " + (targetHeading-currentHeading) +
-//                "\n Approx Length: " + (spline.approximateLength()) +
-////                "\n Phase: " + end +
-////                "\n Stop " + (distanceLeft < estimatedStopping) +
-////                "\n Distance left: " + distanceLeft +
-////                "\n Distance left (x): " + (spline.getEndPoint().getX()-x) +
-////                "\n Distance left (y): " + (spline.getEndPoint().getY()-y) +
-////                "\n Perpendicular error: " + (perpendicularError) +
-////                "\n Heading: " + (heading - currentHeading) +
-//                "\n Estimated Stopping " + estimatedStopping +
-//                "\n End " + end +
-////                "\n " + drive.getTelemetry() +
-//                "\n Reached X: " + reachedXTarget() +
-//                "\n Reached Y: " + reachedYTarget() +
-//                "\n Reached Heading: " + reachedHeadingTarget() +
-//                "\n Reached Translational: " + reachedTranslationalTarget() +
-//                "\n Finished " + isFinished()+
-                "\n Loop Rate " + numLoops/loopTime.seconds()
-//                "\n Heading: " + currentHeading +
-//                "\n X: " + localizer.getX() +
-//                "\n Y: " + localizer.getY() +
-//                "\n X_error: " + x_error +
-//                "\n Y_error: " + y_error +
-//                "\n Translational Error: " + permissible_translational_error +
-//                "\n xPower: " + x_power +
-//                "\n yPower: " + y_power +
-//                "\n theta: " + y_power +
-//                "\n Theta: " + theta +
-//                "\n Magnitude: " + magnitude +
-//                "\n DriveTurn: " + driveTurn
-        ;
+                "\n Targetheading: " + targetHeading +
+                "\n Derivative: " + derivative.getX() + ", " + derivative.getY() + " " +
+                "\n Derivative: " + Math.hypot(derivative.getX(), derivative.getY()) + " " +
+                "\n Heading Error: " + (targetHeading-currentHeading) +
+                "\n Approx Length: " + (spline.approximateLength()) +
+//                "\n Phase: " + end +
+//                "\n Stop " + (distanceLeft < estimatedStopping) +
+//                "\n Distance left: " + distanceLeft +
+//                "\n Distance left (x): " + (spline.getEndPoint().getX()-x) +
+//                "\n Distance left (y): " + (spline.getEndPoint().getY()-y) +
+//                "\n Perpendicular error: " + (perpendicularError) +
+//                "\n Heading: " + (heading - currentHeading) +
+                "\n Estimated Stopping " + estimatedStopping +
+                "\n End " + end +
+//                "\n " + drive.getTelemetry() +
+                "\n Reached X: " + reachedXTarget() +
+                "\n Reached Y: " + reachedYTarget() +
+                "\n Reached Heading: " + reachedHeadingTarget() +
+                "\n Reached Translational: " + reachedTranslationalTarget() +
+                "\n Finished " + isFinished()+
+                "\n Loop Rate " + numLoops/loopTime.seconds() +
+                "\n Heading: " + currentHeading +
+                "\n X: " + localizer.getX() +
+                "\n Y: " + localizer.getY() +
+                "\n X_error: " + x_error +
+                "\n Y_error: " + y_error +
+                "\n Translational Error: " + permissible_translational_error +
+                "\n xPower: " + x_power +
+                "\n yPower: " + y_power +
+                "\n theta: " + y_power +
+                "\n Theta: " + theta +
+                "\n Magnitude: " + magnitude +
+                "\n DriveTurn: " + driveTurn;
     }
 
     public double getPerpendicularError(){

@@ -21,13 +21,17 @@ public class Camlight {
     private final double minWHRatio = 0.44;
     private Limelight3A limelight;
     public List<List<Double>> corners;
+    public String cornerList;
+    public double tX, tY;
 
     public int[] cornerIndices;
-    double contourHeight;
-    double contourWidth;
+    public double contourHeight;
+    public double contourWidth;
     public double[][] cornerPoints;
     public double deltaY;
     public double deltaX;
+    public boolean tiltedLeft;
+    public double targetArea;
     public void init(HardwareMap hwMap) {
         limelight = hwMap.get(Limelight3A.class, "limelight");
 //        telemetry.setMsTransmissionInterval(11); // Idk if we needs this
@@ -37,24 +41,43 @@ public class Camlight {
     }
 
     public double getSampleOrientation() {
-
         LLResult result = limelight.getLatestResult();
-
+        tX = 0;
+        tY = 0;
+        targetArea = 0;
         if (result!=null && result.isValid()) {
             List<LLResultTypes.ColorResult> colorRes = result.getColorResults();
+            if (colorRes.size()==0) {
+                return -1;
+            }
             corners = colorRes.get(0).getTargetCorners();
+
             if (corners.size()>=4) {
                 List<List<Double>> newCorners = colorRes.get(0).getTargetCorners().subList(0, 4);
+                tX = colorRes.get(0).getTargetXDegrees();
+                tY = colorRes.get(0).getTargetYDegrees();
                 cornerIndices = sortCorners(newCorners);
-                deltaY = Math.abs(newCorners.get(cornerIndices[0]).get(1) - newCorners.get(cornerIndices[1]).get(1));
-                deltaX = Math.abs(newCorners.get(cornerIndices[0]).get(0) - newCorners.get(cornerIndices[1]).get(0));
+                targetArea = colorRes.get(0).getTargetArea();
+                if (newCorners.get(cornerIndices[0]).get(0)-newCorners.get(cornerIndices[1]).get(0)
+                    > newCorners.get(cornerIndices[2]).get(1)-newCorners.get(cornerIndices[1]).get(1)) {
+                    deltaY = newCorners.get(cornerIndices[0]).get(1) - newCorners.get(cornerIndices[1]).get(1);
+                    deltaX = newCorners.get(cornerIndices[0]).get(0) - newCorners.get(cornerIndices[1]).get(0);
+                }
+                else {
+                    deltaY = newCorners.get(cornerIndices[2]).get(1) - newCorners.get(cornerIndices[1]).get(1);
+                    deltaX = newCorners.get(cornerIndices[2]).get(0) - newCorners.get(cornerIndices[1]).get(0);
+                }
+
 //                for (int index = 0; index < 4; index++) {
 //                    cornerPoints[index][0] = corners.get(cornerIndices[index]).get(0);
 //                    cornerPoints[index][1] = corners.get(cornerIndices[index]).get(1);
 //                }
+
+                tiltedLeft = newCorners.get(cornerIndices[1]).get(1) <
+                        newCorners.get(cornerIndices[0]).get(1);
                 double angle = Math.toDegrees(Math.atan2(deltaY, deltaX));
-                if (contourWidth > contourHeight) {
-                    return 90 - angle;
+                if (angle < 0) {
+                    return 180+angle;
                 }
                 return angle;
             }
@@ -63,6 +86,7 @@ public class Camlight {
     }
 
     public double getSampleOrientationNN() {
+        getSampleOrientation();
         limelight.pipelineSwitch(5);
         LLResult result = limelight.getLatestResult();
         double sampleHeight = 8.9;
@@ -71,11 +95,18 @@ public class Camlight {
             LLResultTypes.DetectorResult detectorResult = result.getDetectorResults().get(0);
             corners = detectorResult.getTargetCorners();
             if (corners.size() == 4) {
-                contourWidth = Math.abs(corners.get(0).get(0) - corners.get(1).get(0));
-                contourHeight = Math.abs(corners.get(0).get(1) - corners.get(2).get(1));
+                contourWidth = corners.get(0).get(0) - corners.get(1).get(0);
+                contourHeight = corners.get(0).get(1) - corners.get(2).get(1);
                 double widthHeightRatio = contourWidth/contourHeight;
-                return Math.abs(Math.toDegrees(Math.atan((sampleHeight - (sampleWidth*widthHeightRatio))/
-                        ((sampleHeight*widthHeightRatio)-sampleWidth))));
+                double angle = Math.signum(widthHeightRatio) * Math.toDegrees(Math.atan((sampleHeight - (sampleWidth*widthHeightRatio))/
+                        ((sampleHeight*widthHeightRatio)-sampleWidth)));
+
+                if (tiltedLeft) {
+                    return 180-angle;
+                }
+                else {
+                    return angle;
+                }
             }
         }
         return -1;

@@ -31,7 +31,7 @@ public class PleaseWork extends LinearOpMode {
                 driverOp, GamepadKeys.Button.B
         );
 
-        Pika.init(hardwareMap, this);
+        Pika.init(hardwareMap, this, false);
         Pika.movementPower = 0.6;
 
         waitForStart();

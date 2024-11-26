@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.core.Pika;
 public class FindIntakePositions extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        Pika.init(hardwareMap, this);
+        Pika.init(hardwareMap, this, false);
         waitForStart();
 
         while (opModeIsActive()) {
@@ -41,7 +41,6 @@ public class FindIntakePositions extends LinearOpMode {
             else if (gamepad1.dpad_down) {
                 Pika.outtake.lowerArm();
             }
-            Pika.outtakeSlides.holdSlide();
             telemetry.addData("Current Pos: ", Pika.outtakeSlides.getCurrentPosition());
             telemetry.addData("Power: ", Pika.outtakeSlides.getPW());
 

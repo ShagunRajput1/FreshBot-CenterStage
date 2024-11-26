@@ -60,7 +60,6 @@ public class AllTuner extends LinearOpMode {
 
         waitForStart();
         while (!isStopRequested()) {
-            localizer.update();
             x = localizer.getX();
             y = localizer.getY();
             xError = targetX-x;
@@ -90,6 +89,9 @@ public class AllTuner extends LinearOpMode {
             if (Math.abs(Math.hypot(xError, yError))<=2.0) {
                 magnitude = 0;
             }
+
+            localizer.update();
+
             drive.drive(magnitude, theta, driveTurn, .85);
             telemetry.addData("Current Heading: ", currentHeading);
             telemetry.addData("Target Heading: ", targetHeading);

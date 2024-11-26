@@ -4,7 +4,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.norm
 
 
 
-public class Bezier {
+public class Bezier implements Path {
 
     Point[] waypoints;
 
