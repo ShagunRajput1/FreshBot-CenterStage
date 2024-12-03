@@ -267,7 +267,9 @@ public class Localizer {
     }
 
     public String getTelemetry() {
-        return "First heading: " + imu.getCurrentHeading();
+        return "First heading: " + getHeading(Angle.DEGREES) +
+                "\nX: " + getX() +
+                "\nY: " + getY();
     }
 
     public double getRawVelocity() {

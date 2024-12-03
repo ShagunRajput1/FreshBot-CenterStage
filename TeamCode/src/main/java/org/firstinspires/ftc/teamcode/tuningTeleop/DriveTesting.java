@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.core.Pika;
 import org.firstinspires.ftc.teamcode.pathing.MotionPlannerEdit;
 
 @TeleOp(name="Testing")
-public class Testing extends LinearOpMode {
+public class DriveTesting extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Pika.init(hardwareMap, this, false);

@@ -13,15 +13,15 @@ public class Arm {
     double error;
     int targetPosition;
     double power;
-    public double P = 0.01;
-    public double I = 0.00025;
+    public double P = 0.00785;
+    public double I = 0.000375;
     public double D;
     private final int ERROR = 50;
     PIDController armController = new PIDController(P, I, D);
 
 
     public enum ArmPos {
-        INTAKE(275), OUTTAKE(1500), HANG(920);
+        INTAKE(240), OUTTAKE(1500), HANG(920);
         private final int value;
         ArmPos(int val) {
             this.value = val;

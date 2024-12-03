@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.teamcode.component.Arm;
 import org.firstinspires.ftc.teamcode.component.Camlight;
 import org.firstinspires.ftc.teamcode.component.Claw;
+import org.firstinspires.ftc.teamcode.component.FinalClaw;
 import org.firstinspires.ftc.teamcode.component.Intake;
 import org.firstinspires.ftc.teamcode.component.Outtake;
 import org.firstinspires.ftc.teamcode.component.OuttakeSlides;
@@ -20,7 +21,7 @@ public class Pika {
     public static Intake intake;
     public static OuttakeSlides outtakeSlides;
     public static Outtake outtake;
-    public static Claw claw;
+    public static FinalClaw newClaw;
     public static Arm arm;
     public static Camlight limelight;
     public static Localizer localizer;
@@ -34,12 +35,11 @@ public class Pika {
         limelight.init(hardwareMap);
         localizer = new Localizer(opMode, hardwareMap);
         drivetrain = new MecanumDrive(hwMap);
-        claw = new Claw();
-        claw.init(hardwareMap);
+        newClaw = new FinalClaw();
+        newClaw.init(hardwareMap);
         outtakeSlides = new OuttakeSlides();
         outtakeSlides.init(hardwareMap, teleOp);
 
-        claw.init(hardwareMap);
 
     }
 }

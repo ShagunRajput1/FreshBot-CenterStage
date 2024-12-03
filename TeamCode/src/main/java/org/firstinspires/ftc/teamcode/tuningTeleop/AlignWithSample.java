@@ -22,9 +22,9 @@ import org.intellij.lang.annotations.JdkConstants;
 @TeleOp
 @Config
 public class AlignWithSample extends LinearOpMode {
-    public static double P = 0.0124, I=0.0003, D=0.0001;
-    public static double slideP = 0.0375, slideI=0.0032, slideD;
-    public static double kStaticY = 0.2;
+    public static double P = 0.0128, I=0.0003, D=0.001;
+    public static double slideP = 0.034, slideI=0.005, slideD;
+    public static double kStaticY = 0.22;
 
     TweakedPID alignControl = new TweakedPID(P, I, D);
     PIDController xControl = new PIDController(
@@ -41,14 +41,15 @@ public class AlignWithSample extends LinearOpMode {
         Pika.init(hardwareMap, this, false);
         IntakeSample intakeSample = new IntakeSample();
         Grab grab = new Grab();
+        double voltage = 0;
         double pivotAngle = 90;
-        final double targetAreaThreshold = 0.115;
+        final double targetAreaThreshold = 0.1;
         double slideError;
         boolean isAligned = false;
         boolean startAligning = false;
         boolean slidePositionMode = false;
         boolean autoSlide = false;
-        double yError, angle, tX, tY, targetArea;
+        double yError, angle = 0, tX, tY, targetArea;
         double xError, headingError;
         double targetX = Pika.localizer.getX();
         double currentHeading;
@@ -59,6 +60,7 @@ public class AlignWithSample extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+            voltage = hardwareMap.voltageSensor.iterator().next().getVoltage();
             alignControl.setPID(P, I, D);
 
             if (gamepad1.dpad_left) {
@@ -87,10 +89,9 @@ public class AlignWithSample extends LinearOpMode {
             }
             Pika.outtakeSlides.sampleSetPID(slideP, slideI, slideD);
 
-            if (startAligning && intakeSample.isFinished())                  // Changed but not tested
+            if (startAligning && intakeSample.isFinished() &&
+                    Pika.arm.getTargetPosition() == Arm.ArmPos.INTAKE.getPosition())                  // Changed but not tested
                 angle = Pika.limelight.getSampleOrientation();
-            else
-                angle = 0;
 
 
             tX = Pika.limelight.tX;
@@ -99,7 +100,7 @@ public class AlignWithSample extends LinearOpMode {
             currentHeading = Pika.localizer.getHeading(Localizer.Angle.DEGREES);
 
 
-            slideError = tY;
+            slideError = tX;
 
 //            if (targetArea>0.115 && startAligning && Pika.arm.isFinished()) {
 //                pivotAngle = angle;
@@ -114,13 +115,10 @@ public class AlignWithSample extends LinearOpMode {
 //                angle = 90;
 //            }
 
-            if (startAligning && targetArea<targetAreaThreshold && intakeSample.isFinished()) {
-                slideError = 6;
-            }
 
-            slideError = (Math.abs(slideError)>1) ? slideError : 0;
+            slideError = (Math.abs(slideError)>1.2) ? slideError : 0;
             xError = targetX- Pika.localizer.getX();
-            yError = -tX;
+            yError = tY;
             headingError = targetHeading - currentHeading;
 
 
@@ -134,18 +132,22 @@ public class AlignWithSample extends LinearOpMode {
 
             theta = normalizeDegrees(Math.toDegrees(Math.atan2(yError, xError)) - currentHeading);
 
-            Pika.claw.setPivotOrientation(pivotAngle);
+            Pika.newClaw.setPivotOrientation(pivotAngle);
 
 
             if (slidePositionMode) {            // If not using manual control?
-                if (startAligning)             // If using the auto align method
-                    Pika.outtakeSlides.alignWithSample(slideError);
+                if (startAligning) {             // If using the auto align method
+                    if (targetArea>targetAreaThreshold)
+                        Pika.outtakeSlides.alignWithSample(slideError);
+                    else
+                        Pika.outtakeSlides.extendForSample();
+                }
                 else
                     Pika.outtakeSlides.update();
             }
 
             if (intakeSample.isFinished() && targetArea>0.115 &&
-                Math.abs(slideError)<1 && Math.abs(yError)<1.25 && startAligning) {
+                Math.abs(slideError)<1.2 && Math.abs(yError)<1.25 && startAligning) {
                 // Condition modified but not tested
                 Pika.outtakeSlides.setTargetPosition(Math.max(Pika.outtakeSlides.getCurrentPosition()- OuttakeSlides.retractAmount,
                         OuttakeSlides.TurnValue.RETRACTED.getTicks()));
@@ -153,7 +155,7 @@ public class AlignWithSample extends LinearOpMode {
                 startAligning = false;
             }
             if (intakeSample.isFinished() && startAligning)
-                Pika.drivetrain.drive(Math.hypot(yPower, xPower), theta, driveTurn, Pika.movementPower);
+                Pika.drivetrain.drive(Math.hypot(yPower, xPower), theta, driveTurn, Pika.movementPower, voltage);
             else
                 Pika.drivetrain.drive(0,0,0,0);
 
@@ -180,8 +182,8 @@ public class AlignWithSample extends LinearOpMode {
             telemetry.addData("SlideError: ", slideError);
 
             telemetry.addData("\nStartAligning: ", startAligning);
-            telemetry.addData("ReachedSlides: ", Math.abs(slideError)<1);
-            telemetry.addData("Reached Y: ", Math.abs(yError)<1);
+            telemetry.addData("ReachedSlides: ", Math.abs(slideError)<1.2);
+            telemetry.addData("Reached Y: ", Math.abs(yError)<1.25);
             telemetry.addData("Enough Area: ", targetArea>0.115);
             telemetry.addData("Arm Finished: ", Pika.arm.isFinished());
             telemetry.addData("SlidesFinished: ", Pika.outtakeSlides.isFinished());

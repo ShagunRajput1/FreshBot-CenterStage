@@ -78,7 +78,7 @@ public class MotionPlannerEdit {
     public static double kStatic = 0.32; //.19
     private final double translational_error = 1;
     private final double heading_error = 2;
-    private final double endTrajThreshhold = 20;
+    private final double endTrajThreshhold = 5;
     public static final double tIncrement = 0.05;
 
 

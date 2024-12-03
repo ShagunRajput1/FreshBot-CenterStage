@@ -31,7 +31,7 @@ public class AlignWithSample extends Command {
         double angle, slideError, tX, currentHeading, xPower, yPower, driveTurn, theta;
 
         angle = Pika.limelight.getSampleOrientation();
-        Pika.claw.setPivotOrientation(angle);
+        Pika.newClaw.setPivotOrientation(angle);
         slideError = Pika.limelight.tY;
         slideError = (Math.abs(slideError)>0.5) ? slideError : 0;
 

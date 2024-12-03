@@ -19,30 +19,30 @@ public class OuttakeSlides {
     public static double slideK = -0.0005;
     private double power = 0.5;
     public double pw;
-    public double ERROR = 1000;
+    public double ERROR = 2000;
     public int increment = 100;
 
     private final double zeroPwr = 0;
 
     public int holdPos;
     private double stallCurrent = 5.9;
-    public double P = 0.00025;
+    public double P = 0.000275;
     public double I = 0.000008;
     public double D = 0;
-    public static int retractAmount = 4280;
+    public static int retractAmount = 7600;
     private PIDController slideController = new PIDController(P, I,D); //0.006
     private PIDController sampleSlideController = new PIDController(P, I, D);
+    private final double searchForSamplePower = 0.3;
     public static double feedForward = 0.1;
 
     public int targetPos;
+    public boolean holdSlides;
 
 
     public enum TurnValue {
-        SUPER_RETRACTED(-100),
         RETRACTED(0),
-        INTAKE(0),
-        BUCKET(750), // 880
         TEST(2000),
+        PREPARE_OUTTAKE(5000),
         BUCKET2(46000),
         HANG(24000), //880
         HANG_RETRACT(10000);
@@ -61,11 +61,16 @@ public class OuttakeSlides {
     public void init(HardwareMap hwMap, boolean telOp) {
         slide1 = hwMap.get(DcMotorEx.class, "slide1");
         slide2 = hwMap.get(DcMotorEx.class, "slide2");
-        slide1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slide1.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         slide2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         slideController.setIntegrationBounds(-10000000, 10000000);
         sampleSlideController.setIntegrationBounds(-10000000, 10000000);
-        slide1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        if (!telOp) {
+            slide1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            slide1.setTargetPosition(0);
+        }
+        holdSlides = false;
+        targetPos = 0;
 
         stallCurrent = hwMap.voltageSensor.iterator().next().getVoltage()/2.2;
     }
@@ -82,6 +87,8 @@ public class OuttakeSlides {
     }
 
     public void update(){
+        if (holdSlides)
+            setTargetPosition(getCurrentPosition());
         error = getTargetPosition() - getCurrentPosition();
         pw = Range.clip(slideController.calculate(0, error), -1, 1);
         slide1Power = -pw;
@@ -124,12 +131,12 @@ public class OuttakeSlides {
     }
 
     public boolean isFinished(){
-        if (Pika.arm.getTargetPosition() == Arm.ArmPos.INTAKE.getPosition()) {
-            ERROR = 100;
-        }
-        else {
-            ERROR = 1000;
-        }
+//        if (Pika.arm.getTargetPosition() == Arm.ArmPos.INTAKE.getPosition()) {
+//            ERROR = 100;
+//        }
+//        else {
+//            ERROR = 1000;
+//        }
         return Math.abs(slide1.getCurrentPosition()- slide1.getTargetPosition())<=ERROR;
     }
 
@@ -172,6 +179,12 @@ public class OuttakeSlides {
     public void sampleSetPID(double P, double I, double D) {
         sampleSlideController.setPID(P, I, D);
     }
+
+    public void extendForSample() {
+        this.power = searchForSamplePower;
+        goUp();
+    }
+
     public void setPower(double pw) {
         power = pw;
     }
@@ -179,6 +192,7 @@ public class OuttakeSlides {
         return  "TargetPos: " + getTargetPosition() +
                 "\nCurrentPos: " + getCurrentPosition() +
                 "\nSlide1 Pw:" + slide1.getPower() +
-                "\nSlide2 Pw: " + slide2.getPower();
+                "\nSlide2 Pw: " + slide2.getPower() +
+                "\nSlides Finished: " + isFinished();
     }
 }

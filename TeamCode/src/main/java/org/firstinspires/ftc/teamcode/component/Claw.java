@@ -67,10 +67,9 @@ public class Claw {
 
     public void init(HardwareMap hwMap) {
         claw = hwMap.get(Servo.class, "claw");
-        pivotPitchA = hwMap.get(Servo.class, "pivotA");
-        pivotPitchB = hwMap.get(Servo.class, "pivotB");
+        pivotPitchA = hwMap.get(Servo.class, "pitchA");
+        pivotPitchB = hwMap.get(Servo.class, "pitchB");
         armPitch = hwMap.get(Servo.class, "clawPitch");
-        armPitchSupplement = hwMap.get(Servo.class, "clawPitchS");
         orientation = 90;
         setPivotOrientation(orientation);
         setClaw(ClawPosition.CLOSE.value);
