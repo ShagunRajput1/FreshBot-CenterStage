@@ -13,9 +13,9 @@ public class Grab extends SequentialCommand {
     public Grab() {
         super(
                 new RunCommand(() -> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.GRAB.getPosition())),
-                new Wait(200),
+                new Wait(500),
                 new RunCommand(() -> Pika.newClaw.setClaw(FinalClaw.ClawPosition.CLOSE.getPosition())),
-                new RunCommand(() -> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.UP.getPosition()))
+                new RunCommand(() -> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.BEFOREGRAB.getPosition()))
 
                 );
     }

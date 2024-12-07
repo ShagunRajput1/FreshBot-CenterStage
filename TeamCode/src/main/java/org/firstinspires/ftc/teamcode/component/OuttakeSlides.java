@@ -15,6 +15,7 @@ public class OuttakeSlides {
     private DcMotorEx slide2;
     public double slide1Power;
     public double slide2Power;
+    public static double holdPower = 0;
     public double error;
     public static double slideK = -0.0005;
     private double power = 0.5;
@@ -121,6 +122,10 @@ public class OuttakeSlides {
     }
     public void holdSlides() {
         setTargetPosition(holdPos);
+
+//        double power = slide1.getCurrentPosition()*holdPower;
+//        slide1.setPower(-power);
+//        slide2.setPower(power);
     }
     public int getTicks(){
         return slide1.getCurrentPosition();
@@ -194,5 +199,9 @@ public class OuttakeSlides {
                 "\nSlide1 Pw:" + slide1.getPower() +
                 "\nSlide2 Pw: " + slide2.getPower() +
                 "\nSlides Finished: " + isFinished();
+    }
+
+    public double totalCurrent() {
+        return slide1.getCurrent(CurrentUnit.AMPS) + slide2.getCurrent(CurrentUnit.AMPS);
     }
 }

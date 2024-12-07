@@ -18,7 +18,7 @@ public class IntakeSample extends SequentialCommand {
             new ParallelCommand(
                     new RunCommand(() -> Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition())),
                     new RunCommand(() -> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.GRAB.getPosition())),
-                    new RunCommand(()-> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.UP.getPosition()))
+                    new RunCommand(()-> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.BEFOREGRAB.getPosition()))
             ),
 
             new ArmMove(Arm.ArmPos.INTAKE.getPosition())

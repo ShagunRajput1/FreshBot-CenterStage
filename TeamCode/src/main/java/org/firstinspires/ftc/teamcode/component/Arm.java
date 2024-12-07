@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+
 
 public class Arm {
     DcMotorEx armMotor;
@@ -21,7 +23,7 @@ public class Arm {
 
 
     public enum ArmPos {
-        INTAKE(240), OUTTAKE(1500), HANG(920);
+        INTAKE(0), OUTTAKE(1450), HANG(920);
         private final int value;
         ArmPos(int val) {
             this.value = val;
@@ -83,5 +85,9 @@ public class Arm {
 
     public boolean isFinished(){
         return Math.abs(armMotor.getCurrentPosition()- targetPosition)<=ERROR;
+    }
+
+    public double totalCurrent() {
+        return armMotor.getCurrent(CurrentUnit.AMPS);
     }
 }

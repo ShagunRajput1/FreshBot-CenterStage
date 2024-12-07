@@ -13,11 +13,11 @@ import org.firstinspires.ftc.teamcode.core.Pika;
 public class DepositSample extends SequentialCommand {
     public DepositSample(int slidePos) {
         super (
+            new SlidesMove(OuttakeSlides.TurnValue.RETRACTED.getTicks()),
             new ArmMove(Arm.ArmPos.OUTTAKE.getPosition()),
             new SlidesMove(slidePos),
-            new RunCommand(()->Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.DEPOSIT.getPosition())),
-            new Wait(100),
-            new RunCommand(()->Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition()))
+            new RunCommand(()->Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.UP.getPosition())),
+            new RunCommand(()-> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.PLACE.getPosition()))
         );
     }
 }

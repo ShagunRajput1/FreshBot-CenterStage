@@ -12,7 +12,7 @@ public class ServoStuff extends LinearOpMode {
         Servo s1;
         Servo s2;
         s1 = hardwareMap.get(Servo.class, "s1");
-        double pos = 1;
+        double pos = 0;
         s1.setPosition(pos);
         waitForStart();
         while (opModeIsActive()) {
