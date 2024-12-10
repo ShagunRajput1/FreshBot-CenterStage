@@ -14,10 +14,9 @@ public class RetractAll extends SequentialCommand {
         super(
                 new RunCommand(()->Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.UP.getPosition())),
                 new SlidesMove(OuttakeSlides.TurnValue.RETRACTED.getTicks()),
-                new ParallelCommand(
-                        new ArmMove(Arm.ArmPos.INTAKE.getPosition())
-                ),
-                new RunCommand(()-> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.APRIL.getPosition()))
+                new ArmMove(Arm.ArmPos.INTAKE.getPosition()),
+                new RunCommand(()-> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.APRIL.getPosition())),
+                new RunCommand(()->Pika.outtakeSlides.resetEncoder())
 
 
         );

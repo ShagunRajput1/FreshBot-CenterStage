@@ -8,8 +8,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.auto.SampleAuto;
 import org.firstinspires.ftc.teamcode.commandBase.DepositSample;
+import org.firstinspires.ftc.teamcode.commandBase.Drop;
 import org.firstinspires.ftc.teamcode.commandBase.Grab;
 import org.firstinspires.ftc.teamcode.commandBase.IntakeSample;
+import org.firstinspires.ftc.teamcode.commandBase.PrepareOuttake;
 import org.firstinspires.ftc.teamcode.commandBase.RetractAll;
 import org.firstinspires.ftc.teamcode.commandSystem.FollowTrajectory;
 import org.firstinspires.ftc.teamcode.component.Arm;
@@ -55,11 +57,12 @@ public class Main extends LinearOpMode {
                 driverOp2, GamepadKeys.Button.A
         );
         MotionPlannerEdit mp = new MotionPlannerEdit(Pika.drivetrain, Pika.localizer, hardwareMap);
-        DepositSample prepareOuttake = new DepositSample(OuttakeSlides.TurnValue.TEST.getTicks());
+        PrepareOuttake prepareOuttake = new PrepareOuttake();
         DepositSample highBasket = new DepositSample(OuttakeSlides.TurnValue.BUCKET2.getTicks());
         IntakeSample intakeSample = new IntakeSample();
         RetractAll retract = new RetractAll();
         Grab grab = new Grab();
+        Drop drop = new Drop();
         FollowTrajectory goToBucket = new FollowTrajectory(mp, new Bezier(-45, SampleAuto.bucketDeposit));
 
 
@@ -123,9 +126,10 @@ public class Main extends LinearOpMode {
                 Pika.outtakeSlides.goDown();
             }
             else {
-                if (!slidePositionMode && Pika.arm.getTargetPosition() == Arm.ArmPos.OUTTAKE.getPosition()) {
+                if (Pika.arm.getTargetPosition() == Arm.ArmPos.OUTTAKE.getPosition()) {
                     slidePositionMode = true;
                     Pika.outtakeSlides.holdSlides();
+                    Pika.outtakeSlides.resetPID();
                 }
             }
 
@@ -152,6 +156,10 @@ public class Main extends LinearOpMode {
                     Pika.outtakeSlides.goDown();
                     slidePositionMode = false;
                 }
+            }
+            else {
+                if (Pika.arm.getTargetPosition() == Arm.ArmPos.INTAKE.getPosition() && !slidePositionMode)
+                    Pika.outtakeSlides.stopSlides();
             }
 
 
@@ -185,6 +193,7 @@ public class Main extends LinearOpMode {
             if (yReader.wasJustReleased()) {
                 if (Pika.arm.getTargetPosition() == Arm.ArmPos.INTAKE.getPosition()) {
                     if (Pika.newClaw.clawPos == FinalClaw.ClawPosition.CLOSE.getPosition()) {
+                        grab.stop();
                         Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition());
                     }
                     else {
@@ -193,10 +202,7 @@ public class Main extends LinearOpMode {
                 }
                 if (Pika.arm.getTargetPosition() == Arm.ArmPos.OUTTAKE.getPosition() &&
                         Pika.arm.isFinished()) {
-                    if (Pika.newClaw.clawPos == FinalClaw.ClawPosition.CLOSE.getPosition())
-                        Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition());
-                    else
-                        Pika.newClaw.setClaw(FinalClaw.ClawPosition.CLOSE.getPosition());
+                    drop.init();
                 }
 
             }
@@ -207,6 +213,7 @@ public class Main extends LinearOpMode {
                 prepareOuttake.stop();
                 grab.stop();
                 retract.init();
+                slidePositionMode = true;
                 Pika.movementPower = 0.8;
             }
 
@@ -242,10 +249,10 @@ public class Main extends LinearOpMode {
 //            Pika.claw.armPitchSupplement.setPosition(1-armPitchPos);
 
             if (gamepad1.right_trigger>0 && Pika.newClaw.orientation<=180) {
-                Pika.newClaw.setPivotOrientation(Pika.newClaw.orientation+5);
+                Pika.newClaw.setPivotOrientation(Pika.newClaw.orientation+10);
             }
             else if (gamepad1.left_trigger>0 && Pika.newClaw.orientation>=0) {
-                Pika.newClaw.setPivotOrientation(Pika.newClaw.orientation-5);
+                Pika.newClaw.setPivotOrientation(Pika.newClaw.orientation-10);
             }
 
             if (!Pika.arm.isFinished()) {
@@ -256,7 +263,7 @@ public class Main extends LinearOpMode {
                     Pika.outtakeSlides.update();
             }
 
-
+            drop.update();
             grab.update();
             intakeSample.update();
             prepareOuttake.update();
@@ -280,9 +287,11 @@ public class Main extends LinearOpMode {
             telemetry.addData("Tx: ", Pika.limelight.tX);
             telemetry.addData("Ty: ", Pika.limelight.tY);
             telemetry.addData("\nArm: \n", Pika.arm.getTelemetry());
-            telemetry.addData("\nMiniArmPitchPos: ", Pika.newClaw.pitchA.getPosition());
+            telemetry.addData("\nClaw: \n", Pika.newClaw.getTelemetry());
             telemetry.addData("\nSlides: \n", Pika.outtakeSlides.getTelemetry());
             telemetry.addData("", Pika.localizer.getTelemetry());
+            telemetry.addData("Bruh: ", Pika.arm.getTargetPosition() == Arm.ArmPos.INTAKE.getPosition() &&
+                    Pika.outtakeSlides.getCurrentPosition() < OuttakeSlides.TurnValue.MAX_EXTENSION_DOWN.getTicks());
             telemetry.update();
         }
         // 14480
@@ -293,7 +302,7 @@ public class Main extends LinearOpMode {
 
     private boolean readyToIntake() {
         return Pika.arm.getTargetPosition() == Arm.ArmPos.INTAKE.getPosition()
-                && Pika.arm.isFinished() && Pika.newClaw.pitchPos == FinalClaw.ArmPitch.BEFOREGRAB.getPosition();
+                && Pika.arm.isFinished() && Pika.newClaw.pitchPos == FinalClaw.ArmPitch.BEFORE_GRAB.getPosition();
     }
 
 }

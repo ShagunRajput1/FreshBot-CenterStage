@@ -16,6 +16,7 @@ public class NewClawTest extends LinearOpMode {
         boolean clawOpen = true;
         double pos = FinalClaw.ArmPitch.RETRACT.getPosition();
         double miniPitchPos = FinalClaw.MiniPitch.GRAB.getPosition();
+        double clawPos = FinalClaw.ClawPosition.OPEN.getPosition();
         GamepadEx driverOp = new GamepadEx(gamepad1);
         ToggleButtonReader xReader = new ToggleButtonReader(
                 driverOp, GamepadKeys.Button.X
@@ -31,10 +32,10 @@ public class NewClawTest extends LinearOpMode {
             }
 
             if (gamepad1.a) {
-                miniPitchPos += 0.0005;
+                clawPos += 0.0005;
             }
             else if (gamepad1.y) {
-                miniPitchPos -= 0.0005;
+                clawPos -= 0.0005;
             }
 
             if (xReader.wasJustReleased()) {
@@ -48,11 +49,13 @@ public class NewClawTest extends LinearOpMode {
             Pika.newClaw.pitchA.setPosition(pos);
             Pika.newClaw.pitchB.setPosition(1-pos);
             Pika.newClaw.miniPitch.setPosition(miniPitchPos);
+            Pika.newClaw.setClaw(clawPos);
 
             xReader.readValue();
             telemetry.addData("PitchAPos: ", pos);
             telemetry.addData("PitchBPos: ", (1-pos));
             telemetry.addData("MiniPitchPos: ", miniPitchPos);
+            telemetry.addData("claw: ", clawPos);
             telemetry.update();
         }
     }

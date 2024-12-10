@@ -27,6 +27,7 @@ public class Pika {
     public static Localizer localizer;
 
     public static void init(HardwareMap hwMap, LinearOpMode opMode, boolean teleOp) {
+
         movementPower = 0.8;
         hardwareMap = hwMap;
         arm = new Arm();

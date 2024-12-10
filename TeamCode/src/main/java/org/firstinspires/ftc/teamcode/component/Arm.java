@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
+import org.firstinspires.ftc.teamcode.util.TweakedPID;
 
 
 public class Arm {
@@ -15,11 +16,11 @@ public class Arm {
     double error;
     int targetPosition;
     double power;
-    public double P = 0.00785;
-    public double I = 0.000375;
-    public double D;
+    public double P = 0.009;
+    public double I = 0.0002;
+    public double D = 0.0001;
     private final int ERROR = 50;
-    PIDController armController = new PIDController(P, I, D);
+    TweakedPID armController = new TweakedPID(P, I, D);
 
 
     public enum ArmPos {

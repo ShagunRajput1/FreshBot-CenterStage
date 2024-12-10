@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.component.Arm;
 import org.firstinspires.ftc.teamcode.component.OuttakeSlides;
 import org.firstinspires.ftc.teamcode.core.Pika;
 
@@ -22,6 +23,7 @@ public class SlideTuning extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Pika.init(hardwareMap, this, false);
         int holdPos = 0;
+        Pika.arm.setTargetPosition(Arm.ArmPos.OUTTAKE.getPosition());
         waitForStart();
 
         while (opModeIsActive()) {
@@ -53,10 +55,11 @@ public class SlideTuning extends LinearOpMode {
 //            Pika.outtakeSlides.setHoldConstant(holdConstant);
 
 
-            if (positionMode) {
+            if (positionMode && Pika.arm.isFinished()) {
                 Pika.outtakeSlides.setPID(P, I, D);
                 Pika.outtakeSlides.update();
             }
+            Pika.arm.update();
 //            else {
 //                Pika.outtakeSlides.holdSlides();
 //            }
