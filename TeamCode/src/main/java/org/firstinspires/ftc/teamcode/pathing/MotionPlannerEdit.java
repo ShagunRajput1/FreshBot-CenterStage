@@ -28,7 +28,7 @@ public class MotionPlannerEdit {
 
     //    private PIDController translationalControlEnd = new PIDController(0.022,0.001,0.03);
 //    public static PIDController translationalControlEnd = new PIDController(0.025,0.02,0.1);
-    public static TweakedPID translationalControlEndX = new TweakedPID(0.02,0.0015,0.01);
+    public static TweakedPID translationalControlEndX = new TweakedPID(0.02,0.0015,0.00065);
     public static TweakedPID translationalControlEndY = new TweakedPID(0.03, 0, 0);
     public static TweakedPID headingControlEnd = new TweakedPID(0.018, 0.0001, 0); // hope
 
@@ -65,8 +65,8 @@ public class MotionPlannerEdit {
     double radius;
     public final static double THE_HOLY_CONSTANT = 0.0006; //0.001
 
-    public static double kStatic_X = 0.1; //.19
-    public static double kStatic_Y = 0.2; //.19
+    public static double kStatic_X = 0.118; //.19
+    public static double kStatic_Y = 0.218; //.19
     public static double kStatic_Turn = 0.1; //.19
     double ac;
 

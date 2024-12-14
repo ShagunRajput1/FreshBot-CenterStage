@@ -18,7 +18,7 @@ public class OuttakeSlides {
     public static double holdPower = 0;
     public double error;
     public static double slideK = -0.0005;
-    private double power = 0.5;
+    private double power = 0.4;
     public double pw;
     public double ERROR = 2500;
     public int increment = 100;
@@ -31,8 +31,9 @@ public class OuttakeSlides {
     public double I = 0.000008;
     public double D = 0;
     public static int retractAmount = 7600;
-    private PIDController slideController = new PIDController(P, I,D); //0.006
-    private PIDController sampleSlideController = new PIDController(P, I, D);
+    public static int extendAmountIntake = 3050;
+    private final PIDController slideController = new PIDController(P, I,D); //0.006
+    private final PIDController sampleSlideController = new PIDController(P, I, D);
     private final double searchForSamplePower = 0.3;
     public static double feedForward = 0.1;
     private final int holdChangeConstant = 5000;
@@ -43,15 +44,13 @@ public class OuttakeSlides {
 
     public enum TurnValue {
         RETRACTED(0),
-        TEST(2000),
-        PREPARE_OUTTAKE(5000),
-        BUCKET2(43000),
+        BUCKET2(47500),
         HANG(24000), //880
         HANG_RETRACT(10000),
-        MAX_EXTENSION_UP(44000),
+        MAX_EXTENSION_UP(50000),
         MAX_EXTENSION_DOWN(25000);
 
-        int ticks;
+        final int ticks;
 
         TurnValue(int ticks) {
             this.ticks = ticks;
@@ -133,8 +132,11 @@ public class OuttakeSlides {
                     TurnValue.MAX_EXTENSION_UP.getTicks());
         }
         else {
-            slide1.setPower(0);
-            slide2.setPower(0);
+            // Don't wanna un-power slides when extended up
+            if (Pika.arm.getTargetPosition() == Arm.ArmPos.INTAKE.getPosition()) {
+                slide1.setPower(0);
+                slide2.setPower(0);
+            }
         }
 
     }
@@ -163,12 +165,6 @@ public class OuttakeSlides {
     }
 
     public boolean isFinished(){
-//        if (Pika.arm.getTargetPosition() == Arm.ArmPos.INTAKE.getPosition()) {
-//            ERROR = 100;
-//        }
-//        else {
-//            ERROR = 1000;
-//        }
         return Math.abs(slide1.getCurrentPosition()- slide1.getTargetPosition())<=ERROR;
     }
 

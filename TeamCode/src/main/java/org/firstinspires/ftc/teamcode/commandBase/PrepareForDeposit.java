@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.component.FinalClaw;
 import org.firstinspires.ftc.teamcode.component.OuttakeSlides;
 import org.firstinspires.ftc.teamcode.core.Pika;
 
-public class PrepareOuttake extends SequentialCommand {
-    public PrepareOuttake() {
+public class PrepareForDeposit extends SequentialCommand {
+    public PrepareForDeposit() {
         super(
                 new SlidesMove(OuttakeSlides.TurnValue.RETRACTED.getTicks()),
                 new ParallelCommand(
@@ -19,7 +19,8 @@ public class PrepareOuttake extends SequentialCommand {
                 ),
 
                 new ArmMove(Arm.ArmPos.OUTTAKE.getPosition()),
-                new RunCommand(()->Pika.outtakeSlides.resetEncoder())
+                new RunCommand(()->Pika.outtakeSlides.resetEncoder()),
+                new SlidesMove(OuttakeSlides.TurnValue.BUCKET2.getTicks())
         );
     }
 }

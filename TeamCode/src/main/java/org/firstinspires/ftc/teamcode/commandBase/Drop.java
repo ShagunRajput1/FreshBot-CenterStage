@@ -14,7 +14,12 @@ public class Drop extends SequentialCommand {
                     new RunCommand(() -> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.DEPOSIT.getPosition())),
                     new RunCommand(() -> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.DEPOSIT.getPosition()))
                 ),
-                new RunCommand(() -> Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition()))
+                new RunCommand(() -> Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition())),
+                new Wait(500),
+                new ParallelCommand(
+                        new RunCommand(() -> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.UP.getPosition())),
+                        new RunCommand(() -> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.RETRACT.getPosition()))
+                )
         );
     }
 

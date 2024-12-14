@@ -32,10 +32,10 @@ public class NewClawTest extends LinearOpMode {
             }
 
             if (gamepad1.a) {
-                clawPos += 0.0005;
+                miniPitchPos += 0.0005;
             }
             else if (gamepad1.y) {
-                clawPos -= 0.0005;
+                miniPitchPos -= 0.0005;
             }
 
             if (xReader.wasJustReleased()) {

@@ -12,7 +12,11 @@ import org.firstinspires.ftc.teamcode.core.Pika;
 public class RetractAll extends SequentialCommand {
     public RetractAll() {
         super(
-                new RunCommand(()->Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.UP.getPosition())),
+                new ParallelCommand(
+                        new RunCommand(()->Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.UP.getPosition())),
+                        new RunCommand(()->Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.DEPOSIT.getPosition())),
+                        new RunCommand(()->Pika.newClaw.setPivotOrientation(0))
+                ),
                 new SlidesMove(OuttakeSlides.TurnValue.RETRACTED.getTicks()),
                 new ArmMove(Arm.ArmPos.INTAKE.getPosition()),
                 new RunCommand(()-> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.APRIL.getPosition())),
