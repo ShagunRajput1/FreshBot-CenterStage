@@ -33,4 +33,7 @@ public class Wait extends Command {
     public boolean isFinished() {
         return timer.milliseconds()>millis;
     }
+
+    @Override
+    public void stop() {}
 }

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.component.localizer.Localizer;
+import org.firstinspires.ftc.teamcode.core.Pika;
 import org.firstinspires.ftc.teamcode.drivetrain.MecanumDrive;
 import org.firstinspires.ftc.teamcode.pathing.Bezier;
 import org.firstinspires.ftc.teamcode.pathing.Point;
@@ -118,7 +119,7 @@ public class MotionPlannerEdit {
         translationalControl.reset();
         headingControl.reset();
 
-        voltage = hwMap.voltageSensor.iterator().next().getVoltage();
+        voltage = Pika.getVoltage();
 
         numLoops = 0;
         loopTime = new ElapsedTime();

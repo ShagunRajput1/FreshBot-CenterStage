@@ -125,7 +125,8 @@ public class Camlight {
                 contourWidth = corners.get(0).get(0) - corners.get(1).get(0);
                 contourHeight = corners.get(0).get(1) - corners.get(2).get(1);
                 double widthHeightRatio = contourWidth/contourHeight;
-                double angle = Math.signum(widthHeightRatio) * Math.toDegrees(Math.atan((sampleHeight - (sampleWidth*widthHeightRatio))/
+                double angle = Math.signum(widthHeightRatio) *
+                        Math.toDegrees(Math.atan((sampleHeight - (sampleWidth*widthHeightRatio))/
                         ((sampleHeight*widthHeightRatio)-sampleWidth)));
 
                 if (tiltedLeft) {

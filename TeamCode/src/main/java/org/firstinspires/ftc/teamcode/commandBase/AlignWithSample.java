@@ -68,4 +68,8 @@ public class AlignWithSample extends Command {
     public boolean isFinished() {
         return (xError<=1 && yError<=0.7 && targetArea>0.15);
     }
+
+    @Override
+    public void stop() {
+    }
 }

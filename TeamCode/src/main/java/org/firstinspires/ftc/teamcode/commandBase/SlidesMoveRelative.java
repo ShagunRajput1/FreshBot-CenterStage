@@ -27,5 +27,8 @@ public class SlidesMoveRelative extends Command {
     public boolean isFinished() {
         return Pika.outtakeSlides.isFinished();
     }
+
+    @Override
+    public void stop() {}
 }
 

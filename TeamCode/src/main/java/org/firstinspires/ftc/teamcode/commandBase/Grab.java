@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.component.OuttakeSlides;
 import org.firstinspires.ftc.teamcode.core.Pika;
 
 public class Grab extends SequentialCommand {
+
     public Grab() {
         super(
                 new Wait(500),

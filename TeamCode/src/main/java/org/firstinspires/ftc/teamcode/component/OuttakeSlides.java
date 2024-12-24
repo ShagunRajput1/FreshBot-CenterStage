@@ -27,8 +27,8 @@ public class OuttakeSlides {
 
     public int holdPos;
     private double stallCurrent = 5.9;
-    public double P = 0.00017;
-    public double I = 0.000008;
+    public double P = 0.0002;
+    public double I = 0.00001;
     public double D = 0;
     public static int retractAmount = 7600;
     public static int extendAmountIntake = 3050;
@@ -44,9 +44,9 @@ public class OuttakeSlides {
 
     public enum TurnValue {
         RETRACTED(0),
+        HANG_RETRACT(6000),
         BUCKET2(47500),
         HANG(24000), //880
-        HANG_RETRACT(10000),
         MAX_EXTENSION_UP(50000),
         MAX_EXTENSION_DOWN(25000);
 
@@ -122,7 +122,8 @@ public class OuttakeSlides {
     public void goUp() {
         slide1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         slide2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        if ((Pika.arm.getTargetPosition() == Arm.ArmPos.OUTTAKE.getPosition() &&
+        if (((Pika.arm.getTargetPosition() == Arm.ArmPos.OUTTAKE.getPosition() ||
+                Pika.arm.getTargetPosition() == Arm.ArmPos.PREP_HANG.getPosition()) &&
                 slide1.getCurrentPosition()<TurnValue.MAX_EXTENSION_UP.ticks) ||
                 (Pika.arm.getTargetPosition() == Arm.ArmPos.INTAKE.getPosition() &&
                 slide1.getCurrentPosition() < TurnValue.MAX_EXTENSION_DOWN.ticks)) {

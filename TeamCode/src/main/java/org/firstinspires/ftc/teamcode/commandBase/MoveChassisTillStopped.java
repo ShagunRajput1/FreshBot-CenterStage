@@ -3,29 +3,25 @@ package org.firstinspires.ftc.teamcode.commandBase;
 import org.firstinspires.ftc.teamcode.commandSystem.Command;
 import org.firstinspires.ftc.teamcode.core.Pika;
 
-public class ArmMove extends Command {
-    int pos;
-
-    public ArmMove(int pos) {
-        this.pos = pos;
-    }
-
+public class MoveChassisTillStopped extends Command {
+    double currentThreshold = 8;
     @Override
     public void init() {
-        Pika.arm.setTargetPosition(pos);
+        Pika.drivetrain.drive(1, 0, 0, 0.75, Pika.getVoltage());
     }
-
 
     @Override
     public void update() {
-        Pika.outtakeSlides.freeMove();
+
     }
 
     @Override
     public boolean isFinished() {
-        return Pika.arm.isFinished();
+        return Pika.drivetrain.totalCurrent() >= currentThreshold;
     }
 
     @Override
-    public void stop() {}
+    public void stop() {
+
+    }
 }

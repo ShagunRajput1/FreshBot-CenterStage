@@ -15,8 +15,8 @@ public class NewClawTest extends LinearOpMode {
         Pika.init(hardwareMap, this, false);
         boolean clawOpen = true;
         double pos = FinalClaw.ArmPitch.RETRACT.getPosition();
-        double miniPitchPos = FinalClaw.MiniPitch.GRAB.getPosition();
-        double clawPos = FinalClaw.ClawPosition.OPEN.getPosition();
+        double miniPitchPos = FinalClaw.MiniPitch.RETRACT.getPosition();
+        double clawPos = FinalClaw.ClawPosition.CLOSE.getPosition();
         GamepadEx driverOp = new GamepadEx(gamepad1);
         ToggleButtonReader xReader = new ToggleButtonReader(
                 driverOp, GamepadKeys.Button.X
@@ -38,18 +38,28 @@ public class NewClawTest extends LinearOpMode {
                 miniPitchPos -= 0.0005;
             }
 
-            if (xReader.wasJustReleased()) {
-                if (clawOpen)
-                    Pika.newClaw.setClaw(FinalClaw.ClawPosition.CLOSE.getPosition());
-                else
-                    Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition());
-                clawOpen = !clawOpen;
+
+           if (xReader.wasJustReleased()) {
+               clawOpen = !clawOpen;
+               if (clawOpen) {
+                   Pika.newClaw.setClaw(FinalClaw.ClawPosition.CLOSE.getPosition());
+               }
+               else
+                   Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition());
+           }
+
+
+            if (gamepad1.right_trigger>0 && Pika.newClaw.orientation<=180) {
+                Pika.newClaw.setPivotOrientation(Pika.newClaw.orientation+(8*gamepad1.right_trigger));
             }
+            else if (gamepad1.left_trigger>0 && Pika.newClaw.orientation>=0) {
+                Pika.newClaw.setPivotOrientation(Pika.newClaw.orientation-(8*gamepad1.left_trigger));
+            }
+
 
             Pika.newClaw.pitchA.setPosition(pos);
             Pika.newClaw.pitchB.setPosition(1-pos);
             Pika.newClaw.miniPitch.setPosition(miniPitchPos);
-            Pika.newClaw.setClaw(clawPos);
 
             xReader.readValue();
             telemetry.addData("PitchAPos: ", pos);

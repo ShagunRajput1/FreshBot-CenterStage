@@ -28,4 +28,7 @@ public class FollowTrajectory extends Command {
     public boolean isFinished() {
         return mp.isFinished();
     }
+
+    @Override
+    public void stop() {}
 }

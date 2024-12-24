@@ -24,7 +24,7 @@ public class Arm {
 
 
     public enum ArmPos {
-        INTAKE(0), OUTTAKE(1450), HANG(920);
+        INTAKE(0), OUTTAKE(1450), HANG(450), PREP_HANG(1650), STUPID_TAIL(1530);
         private final int value;
         ArmPos(int val) {
             this.value = val;
@@ -58,7 +58,7 @@ public class Arm {
         targetPosition = target;
     }
 
-    public double getPosition() {
+    public int getPosition() {
         return armMotor.getCurrentPosition();
     }
 

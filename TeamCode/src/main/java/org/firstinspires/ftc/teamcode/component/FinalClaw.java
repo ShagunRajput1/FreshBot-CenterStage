@@ -13,7 +13,7 @@ public class FinalClaw {
     public double clawPos, pitchPos, miniPitchPos, pivotPos;
     public double orientation;
     public enum ClawPosition {
-        OPEN(0), CLOSE(0.34);
+        OPEN(0.058), CLOSE(0.295);
         private final double value;
 
         ClawPosition(double value) {
@@ -25,8 +25,8 @@ public class FinalClaw {
         }
     }
     public enum ArmPitch {
-        UP(0.50), RETRACT(0), GRAB(0.6445), DEPOSIT(0.4235), APRIL(0.179),
-        BEFORE_GRAB(0.5845), SPEC_DEPOSIT(0.261), SPEC_GRAB(0.4725);
+        UP(0.6335), RETRACT(0.0975), GRAB(0.718), DEPOSIT(0.5795), APRIL(0.2625),
+        BEFORE_GRAB(0.628), SPEC_DEPOSIT(0.261), SPEC_GRAB(0.4725);
 
         private final double value;
 
@@ -40,7 +40,7 @@ public class FinalClaw {
     }
 
     public enum MiniPitch {
-        RETRACT(0.324), GRAB(0.5515), DEPOSIT(0.18), SPEC_DEPOSIT(0.71),
+        RETRACT(0.8075), GRAB(0.53), DEPOSIT(1), SPEC_DEPOSIT(0.71),
         SPEC_GRAB(0.379);
 
         private final double value;
@@ -62,7 +62,7 @@ public class FinalClaw {
         pitchB = hwMap.get(Servo.class, "pitchB");
         miniPitch = hwMap.get(Servo.class, "miniPitch");
         pivot = hwMap.get(Servo.class, "pivot");
-        setPivotOrientation(90);
+        setPivotOrientation(180);
         claw.setPosition(ClawPosition.CLOSE.getPosition());
         pitchA.setPosition(ArmPitch.RETRACT.getPosition());
         pitchB.setPosition(1-ArmPitch.RETRACT.getPosition());
@@ -90,7 +90,7 @@ public class FinalClaw {
         pivot.setPosition(pos);
     }
     public double orientationToPos(double angle) {
-        return (angle / 180) * (1-0.0815) + 0.0815;
+        return (angle / 180) * (1-0.0737) + 0.0737;
 
     }
 

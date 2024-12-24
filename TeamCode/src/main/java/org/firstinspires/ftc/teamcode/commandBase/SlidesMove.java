@@ -25,4 +25,7 @@ public class SlidesMove extends Command {
     public boolean isFinished() {
         return Pika.outtakeSlides.isFinished();
     }
+
+    @Override
+    public void stop() {}
 }

@@ -18,7 +18,7 @@ public class SlideTuning extends LinearOpMode {
     public static double P = 0.000275, I = 0.000008, D = 0;
     public static int pos = 0;
     public static double holdConstant = 0;
-    boolean positionMode = false;
+    boolean positionMode = true;
     @Override
     public void runOpMode() throws InterruptedException {
         Pika.init(hardwareMap, this, false);
@@ -28,29 +28,29 @@ public class SlideTuning extends LinearOpMode {
 
         while (opModeIsActive()) {
             Pika.outtakeSlides.setTargetPosition(pos);
-            if (gamepad1.right_bumper) {
-                positionMode = true;
-                Pika.outtakeSlides.setTargetPosition(Pika.outtakeSlides.targetPos+150);
-            }
-            else if (gamepad1.left_bumper && Pika.outtakeSlides.targetPos>=0) {
-                positionMode = true;
-                Pika.outtakeSlides.setTargetPosition(Pika.outtakeSlides.targetPos-150);
-            }
-
-            if (gamepad1.dpad_up) {
-                positionMode = false;
-                Pika.outtakeSlides.goUp();
-                holdPos = Pika.outtakeSlides.getCurrentPosition();
-            }
-            else if (gamepad1.dpad_down) {
-                positionMode = false;
-                Pika.outtakeSlides.goDown();
-                holdPos = Pika.outtakeSlides.getCurrentPosition();
-            }
-            else {
-                positionMode = true;
-//                Pika.outtakeSlides.setTargetPosition(holdPos);
-            }
+//            if (gamepad1.right_bumper) {
+//                positionMode = true;
+//                Pika.outtakeSlides.setTargetPosition(Pika.outtakeSlides.targetPos+150);
+//            }
+//            else if (gamepad1.left_bumper && Pika.outtakeSlides.targetPos>=0) {
+//                positionMode = true;
+//                Pika.outtakeSlides.setTargetPosition(Pika.outtakeSlides.targetPos-150);
+//            }
+//
+//            if (gamepad1.dpad_up) {
+//                positionMode = false;
+//                Pika.outtakeSlides.goUp();
+//                holdPos = Pika.outtakeSlides.getCurrentPosition();
+//            }
+//            else if (gamepad1.dpad_down) {
+//                positionMode = false;
+//                Pika.outtakeSlides.goDown();
+//                holdPos = Pika.outtakeSlides.getCurrentPosition();
+//            }
+//            else {
+//                positionMode = true;
+////                Pika.outtakeSlides.setTargetPosition(holdPos);
+//            }
 
 //            Pika.outtakeSlides.setHoldConstant(holdConstant);
 

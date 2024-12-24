@@ -43,4 +43,8 @@ public class Pika {
 
 
     }
+
+    public static double getVoltage() {
+        return hardwareMap.voltageSensor.iterator().next().getVoltage();
+    }
 }

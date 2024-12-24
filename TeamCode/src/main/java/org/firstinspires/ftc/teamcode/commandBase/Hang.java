@@ -8,19 +8,19 @@ import org.firstinspires.ftc.teamcode.component.FinalClaw;
 import org.firstinspires.ftc.teamcode.component.OuttakeSlides;
 import org.firstinspires.ftc.teamcode.core.Pika;
 
-public class PrepareOuttakeBasket extends SequentialCommand {
-    public PrepareOuttakeBasket() {
+public class Hang extends SequentialCommand {
+    public Hang() {
         super(
                 new SlidesMove(OuttakeSlides.TurnValue.RETRACTED.getTicks()),
                 new ParallelCommand(
-                        new RunCommand(() -> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.DEPOSIT.getPosition())),
-                        new RunCommand(() -> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.BEFORE_GRAB.getPosition())),
-                        new RunCommand(()->Pika.newClaw.setPivotOrientation(180))
+                        new ArmMove(Arm.ArmPos.PREP_HANG.getPosition()),
+                        new RunCommand(()-> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.RETRACT.getPosition()))
                 ),
-
-                new ArmMove(Arm.ArmPos.OUTTAKE.getPosition()),
                 new RunCommand(()->Pika.outtakeSlides.resetEncoder()),
-                new RunCommand(() -> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.UP.getPosition()))
+                new SlidesMove(OuttakeSlides.TurnValue.HANG.getTicks()),
+                new MoveChassisTillStopped(),
+                new ArmMove(Arm.ArmPos.STUPID_TAIL.getPosition()),
+                new SlidesMove(OuttakeSlides.TurnValue.HANG_RETRACT.getTicks())
         );
     }
 }

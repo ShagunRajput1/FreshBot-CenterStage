@@ -26,4 +26,7 @@ public class RunCommand extends Command {
     public boolean isFinished() {
         return true;
     }
+
+    @Override
+    public void stop() {}
 }
