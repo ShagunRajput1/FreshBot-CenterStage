@@ -15,7 +15,7 @@ public class PrepareOuttakeSpec extends SequentialCommand {
                 new ParallelCommand(
                         new RunCommand(() -> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.SPEC_DEPOSIT.getPosition())),
                         new RunCommand(() -> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.SPEC_DEPOSIT.getPosition())),
-                        new RunCommand(()->Pika.newClaw.setPivotOrientation(90))
+                        new RunCommand(()->Pika.newClaw.setPivotOrientation(180))
                 ),
 
                 new ArmMove(Arm.ArmPos.OUTTAKE.getPosition()),

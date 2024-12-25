@@ -28,9 +28,9 @@ public class MotionPlannerTuner extends LinearOpMode {
     public static double targetX, targetY;
     public static double targetHeading;
 
-    public static double kX = 0.08, pX = 0.02, iX = 0.0015, dX = 0.00065;
-    public static double kY = 0.14, pY = 0.03, iY, dY;
-    public static double kT = 0.085, pT = 0.01, iT = 0.0001, dT;
+    public static double kX = 0.08, pX = 0.02, iX = 0.0015, dX = 0.000;
+    public static double kY = 0.14, pY = 0.03, iY = 0.0002, dY = 0;
+    public static double kT = 0.085, pT = 0.018, iT = 0.00012, dT;
     public static double pTr = 0.01, iTr = 0.0001, dTr;
     Bezier testPath;
     Bezier returnPath;

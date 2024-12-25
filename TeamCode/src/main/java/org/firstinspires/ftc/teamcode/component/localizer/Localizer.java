@@ -290,5 +290,8 @@ public class Localizer {
     public void setY(double y) {
         this.y = y;
     }
+    public void setHeading(double heading) {
+        this.heading = heading;
+    }
 
 }

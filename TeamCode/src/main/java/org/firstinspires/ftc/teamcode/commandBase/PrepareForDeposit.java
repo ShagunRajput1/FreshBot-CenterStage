@@ -13,9 +13,9 @@ public class PrepareForDeposit extends SequentialCommand {
         super(
                 new SlidesMove(OuttakeSlides.TurnValue.RETRACTED.getTicks()),
                 new ParallelCommand(
-                        new RunCommand(() -> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.DEPOSIT.getPosition())),
+                        new RunCommand(() -> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.RETRACT.getPosition())),
                         new RunCommand(() -> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.UP.getPosition())),
-                        new RunCommand(()->Pika.newClaw.setPivotOrientation(90))
+                        new RunCommand(()->Pika.newClaw.setPivotOrientation(180))
                 ),
 
                 new ArmMove(Arm.ArmPos.OUTTAKE.getPosition()),

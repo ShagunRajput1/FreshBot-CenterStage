@@ -29,9 +29,9 @@ public class MotionPlannerEdit {
 
     //    private PIDController translationalControlEnd = new PIDController(0.022,0.001,0.03);
 //    public static PIDController translationalControlEnd = new PIDController(0.025,0.02,0.1);
-    public static TweakedPID translationalControlEndX = new TweakedPID(0.02,0.0015,0.00065);
-    public static TweakedPID translationalControlEndY = new TweakedPID(0.03, 0, 0);
-    public static TweakedPID headingControlEnd = new TweakedPID(0.018, 0.0001, 0); // hope
+    public static TweakedPID translationalControlEndX = new TweakedPID(0.02,0.0015, 0);
+    public static TweakedPID translationalControlEndY = new TweakedPID(0.03, 0.0002, 0);  // i term modified but might revert
+    public static TweakedPID headingControlEnd = new TweakedPID(0.018, 0.00012, 0); // hope
 
 
     private int index;

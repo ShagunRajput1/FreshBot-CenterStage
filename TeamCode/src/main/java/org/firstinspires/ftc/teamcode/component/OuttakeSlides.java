@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.core.Pika;
+import org.firstinspires.ftc.teamcode.tuningTeleop.AlignWithSample;
 
 public class OuttakeSlides {
 
@@ -33,8 +34,8 @@ public class OuttakeSlides {
     public static int retractAmount = 7600;
     public static int extendAmountIntake = 3050;
     private final PIDController slideController = new PIDController(P, I,D); //0.006
-    private final PIDController sampleSlideController = new PIDController(P, I, D);
-    private final double searchForSamplePower = 0.3;
+    private final PIDController sampleSlideController = new PIDController(0.007, 0.0005, 0);
+    private final double searchForSamplePower = 0.24;
     public static double feedForward = 0.1;
     private final int holdChangeConstant = 5000;
 
@@ -45,9 +46,9 @@ public class OuttakeSlides {
     public enum TurnValue {
         RETRACTED(0),
         HANG_RETRACT(6000),
-        BUCKET2(47500),
+        BUCKET2(40000),
         HANG(24000), //880
-        MAX_EXTENSION_UP(50000),
+        MAX_EXTENSION_UP(39500),
         MAX_EXTENSION_DOWN(25000);
 
         final int ticks;
@@ -197,6 +198,7 @@ public class OuttakeSlides {
 
     public void alignWithSample(double error) {
         pw = Range.clip(sampleSlideController.calculate(0, error), -1, 1);
+        pw = pw + Math.signum(pw)*AlignWithSample.slideKStatic;
         slide1Power = -pw;
         slide2Power = pw;
         slide1.setPower(-pw);

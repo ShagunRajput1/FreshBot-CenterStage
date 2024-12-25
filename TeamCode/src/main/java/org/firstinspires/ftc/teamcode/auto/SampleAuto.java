@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.commandSystem.FollowTrajectory;
 import org.firstinspires.ftc.teamcode.commandSystem.ParallelCommand;
 import org.firstinspires.ftc.teamcode.commandSystem.RunCommand;
 import org.firstinspires.ftc.teamcode.commandSystem.SequentialCommand;
+import org.firstinspires.ftc.teamcode.commandSystem.Wait;
 import org.firstinspires.ftc.teamcode.component.FinalClaw;
 import org.firstinspires.ftc.teamcode.component.OuttakeSlides;
 import org.firstinspires.ftc.teamcode.core.Pika;
@@ -23,32 +24,35 @@ import org.firstinspires.ftc.teamcode.pathing.Point;
 public class SampleAuto extends LinearOpMode {
     Bezier bucket, sample1, sample2, sample3, submersibleIntake;
     MotionPlannerEdit follower;
-    public static Point bucketDeposit = new Point(10, 9.75);
+    public static Point bucketDeposit = new Point(11.8, 7.5);
 
-    public static Point submersible = new Point(49, -18);
+
+    public static Point submersible = new Point(45, -20);
     @Override
     public void runOpMode() throws InterruptedException {
         Pika.init(hardwareMap, this, false);
         follower = new MotionPlannerEdit(Pika.drivetrain, Pika.localizer, hardwareMap);
 
         while (opModeInInit()) {
-            bucket = new Bezier(-45,
+            bucket = new Bezier(-45,        // If heading is changed, make sure to change the setHeading later
                     new Point(0, 0),
                     bucketDeposit);
             sample1 = new Bezier(0,
                     bucketDeposit,
-                    new Point(11.6, 7.5)
+                    new Point(13.89, 7.7209)
             );
             sample2 = new Bezier(0,
                     bucketDeposit,
-                    new Point(11.6, 18.5)
+                    new Point(12.2966, 18)
             );
-            sample3 = new Bezier(15.5,
+            sample3 = new Bezier(14.46,
                     bucketDeposit,
-                    new Point(10.76, 21.9));
+                    new Point(15.10, 22.4));
 
             submersibleIntake = new Bezier(-90,
                     bucketDeposit,
+                    new Point(44, 3.2),
+                    new Point(45.9, -12.3),
                     submersible);
 
 
@@ -58,18 +62,28 @@ public class SampleAuto extends LinearOpMode {
 
         SequentialCommand commandRunner = new SequentialCommand(
                 new ParallelCommand(new FollowTrajectory(follower, bucket),
-                                    new PrepareOuttakeAuto()
+                                    new SequentialCommand(
+                                            new Wait(600),
+                                            new PrepareOuttakeAuto()
+                                    )
                 ),
                 new DepositSample(OuttakeSlides.TurnValue.BUCKET2.getTicks()),
                 new ParallelCommand(
                     new RunCommand(()->Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.UP.getPosition())),
                     new RunCommand(()->Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.RETRACT.getPosition()))
+//                    new RunCommand(()->Pika.localizer.setX(bucketDeposit.getX())),
+//                    new RunCommand(()->Pika.localizer.setY(bucketDeposit.getY())),
+//                    new RunCommand(()->Pika.localizer.setHeading(-45))
+
                 ),
                 new ParallelCommand(
                         new IntakeSample(),
                         new FollowTrajectory(follower, sample1)
                 ),
-                new SlidesMove(24400),
+                new ParallelCommand(
+                        new SlidesMove(21500),
+                        new RunCommand(()->Pika.newClaw.setPivotOrientation(180))
+                ),
 
                 new Grab(),
 
@@ -83,14 +97,18 @@ public class SampleAuto extends LinearOpMode {
                 new ParallelCommand(
                         new RunCommand(()->Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.UP.getPosition())),
                         new RunCommand(()->Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.RETRACT.getPosition()))
+//                        new RunCommand(()->Pika.localizer.setX(bucketDeposit.getX())),
+//                        new RunCommand(()->Pika.localizer.setY(bucketDeposit.getY())),
+//                        new RunCommand(()->Pika.localizer.setHeading(-45))
+
                 ),
                 new ParallelCommand(
                         new IntakeSample(),
                         new FollowTrajectory(follower, sample2)
                 ),
                 new ParallelCommand(
-                        new SlidesMove(23500),
-                        new RunCommand(()->Pika.newClaw.setPivotOrientation(75))
+                        new SlidesMove(24510),
+                        new RunCommand(()->Pika.newClaw.setPivotOrientation(180))
                     ),
 
 
@@ -105,21 +123,33 @@ public class SampleAuto extends LinearOpMode {
                 new ParallelCommand(
                         new RunCommand(()->Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.UP.getPosition())),
                         new RunCommand(()->Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.RETRACT.getPosition()))
+//                        new RunCommand(()->Pika.localizer.setX(bucketDeposit.getX())),
+//                        new RunCommand(()->Pika.localizer.setY(bucketDeposit.getY())),
+//                        new RunCommand(()->Pika.localizer.setHeading(-45))
                 ),
                 new ParallelCommand(
                         new IntakeSample(),
                         new FollowTrajectory(follower, sample3)
                 ),
-                new SlidesMove(22000),
+                new ParallelCommand(
+                        new SlidesMove(19600),
+                        new RunCommand(()->Pika.newClaw.setPivotOrientation(180))
+                ),
                 new Grab(),
                 new ParallelCommand(new FollowTrajectory(follower, new Bezier(-45,
                         bucketDeposit)),
-                        new PrepareOuttakeAuto()
+                        new SequentialCommand(
+                                new Wait(300),
+                                new PrepareOuttakeAuto()
+                        )
                 ),
                 new DepositSample(OuttakeSlides.TurnValue.BUCKET2.getTicks()),
                 new ParallelCommand(
                         new RunCommand(()->Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.UP.getPosition())),
                         new RunCommand(()->Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.RETRACT.getPosition()))
+//                        new RunCommand(()->Pika.localizer.setX(bucketDeposit.getX())),
+//                        new RunCommand(()->Pika.localizer.setY(bucketDeposit.getY())),
+//                        new RunCommand(()->Pika.localizer.setHeading(-45))
                 ),
                 new IntakeSample()
 

@@ -12,17 +12,19 @@ import org.firstinspires.ftc.teamcode.core.Pika;
 public class DepositSample extends SequentialCommand {
     public DepositSample(int slidePos) {
         super (
-            new SlidesMove(OuttakeSlides.TurnValue.RETRACTED.getTicks()),
-            new ArmMove(Arm.ArmPos.OUTTAKE.getPosition()),
-            new RunCommand(()->Pika.outtakeSlides.resetEncoder()),
-            new SlidesMove(slidePos),
+//            new SlidesMove(OuttakeSlides.TurnValue.RETRACTED.getTicks()),
+//            new ArmMove(Arm.ArmPos.OUTTAKE.getPosition()),
+//            new RunCommand(()->Pika.outtakeSlides.resetEncoder()),
+//            new SlidesMove(slidePos),
             new ParallelCommand(
                     new RunCommand(()->Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.DEPOSIT.getPosition())),
-                    new RunCommand(()-> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.DEPOSIT.getPosition()))
+                    new RunCommand(()-> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.DEPOSIT.getPosition())),
+                    new RunCommand(()-> Pika.newClaw.setPivotOrientation(180))
+
             ),
-            new Wait(400),
+            new Wait(100),
             new RunCommand(()->Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition())),
-            new Wait(500)
+            new Wait(50)
         );
     }
 }

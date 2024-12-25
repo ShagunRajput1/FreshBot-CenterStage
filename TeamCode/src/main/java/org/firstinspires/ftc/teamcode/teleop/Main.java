@@ -67,8 +67,8 @@ public class Main extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Pika.init(hardwareMap, this, true);
-        Pika.localizer.setX(SampleAuto.bucketDeposit.getX());
-        Pika.localizer.setY(SampleAuto.bucketDeposit.getY());
+//        Pika.localizer.setX(SampleAuto.bucketDeposit.getX());
+//        Pika.localizer.setY(SampleAuto.bucketDeposit.getY());
         waitForStart();
         GamepadEx driverOp = new GamepadEx(gamepad1);
         GamepadEx driverOp2 = new GamepadEx(gamepad2);

@@ -5,7 +5,6 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.norm
 import com.arcrobotics.ftclib.controller.PIDController;
 
 import org.firstinspires.ftc.teamcode.commandSystem.Command;
-import org.firstinspires.ftc.teamcode.component.Arm;
 import org.firstinspires.ftc.teamcode.component.localizer.Localizer;
 import org.firstinspires.ftc.teamcode.core.Pika;
 import org.firstinspires.ftc.teamcode.pathing.MotionPlannerEdit;
@@ -13,13 +12,17 @@ import org.firstinspires.ftc.teamcode.pathing.MotionPlannerEdit;
 public class AlignWithSample extends Command {
     double targetHeading, targetX;
     double xError, yError, headingError, targetArea;
+    double angle, slideError, tX, tY, currentHeading, xPower, yPower, driveTurn, theta;
+    double targetAreaThreshold = 0.115;
     double kStaticY = 0.2;
-    PIDController yControl = new PIDController(0.0145, 0.0002, 0.0001);
-    PIDController xControl = new PIDController(0.02, 0.0015, 0.01);
-    PIDController headingControl = new PIDController(0.01, 0.0001, 0);
+    boolean isFinished = false;
+    PIDController yControl = new PIDController(0.01, 0.005, 0.0001);
+    PIDController xControl = new PIDController(0.02, 0.0015, 0.0065);
+    PIDController headingControl = new PIDController(0.018, 0.0001, 0);
     double error;
     @Override
     public void init() {
+        isFinished = false;
         yControl.setIntegrationBounds(-10000000, 10000000);
         xControl.setIntegrationBounds(-10000000, 10000000);
         headingControl.setIntegrationBounds(-10000000, 10000000);
@@ -28,36 +31,41 @@ public class AlignWithSample extends Command {
     }
     @Override
     public void update() {
-        double angle, slideError, tX, currentHeading, xPower, yPower, driveTurn, theta;
+        if (isFinished)
+            return;
 
         angle = Pika.limelight.getSampleOrientation();
-        Pika.newClaw.setPivotOrientation(angle);
-        slideError = Pika.limelight.tY;
-        slideError = (Math.abs(slideError)>0.5) ? slideError : 0;
-
         tX = Pika.limelight.tX;
+        tY = Pika.limelight.tY;
         targetArea = Pika.limelight.targetArea;
-        yError = (targetArea>0.15) ? -tX : 0;
-
-
-        xError = targetX- Pika.localizer.getX();
         currentHeading = Pika.localizer.getHeading(Localizer.Angle.DEGREES);
+
+
+        slideError = tX+9;
+
+        slideError = (Math.abs(slideError)>1.2) ? slideError : 0;
+        xError = targetX- Pika.localizer.getX();
+        yError = tY;
         headingError = targetHeading - currentHeading;
+
 
         xPower = xControl.calculate(0, xError);
         xPower = (Math.abs(xError)>1) ? xPower + Math.signum(xPower)* MotionPlannerEdit.kStatic_X : 0;
 
+        yPower = yControl.calculate(0, yError);
+        yPower = (Math.abs(yError)>3) ? Math.signum(yPower)*kStaticY + yPower : 0;
+
         driveTurn = headingControl.calculate(0, headingError);
 
-
-        yPower = yControl.calculate(0, yError);
-        yPower = (Math.abs(yError)>0.7) ? Math.signum(yPower)*kStaticY + yPower : 0;
-
         theta = normalizeDegrees(Math.toDegrees(Math.atan2(yError, xError)) - currentHeading);
+        if (targetArea>targetAreaThreshold)
+            Pika.outtakeSlides.alignWithSample(slideError);
+        else
+            Pika.outtakeSlides.extendForSample();
 
-        if (Pika.arm.getTargetPosition() == Arm.ArmPos.INTAKE.getPosition()
-                && targetArea>0.15 && Math.abs(slideError)<0.5 && Math.abs(yError)<0.7) {
-            Pika.outtakeSlides.retractToIntake();
+        if (targetArea>targetAreaThreshold && Math.abs(slideError)<1.2 && Math.abs(yError)<3) {
+            Pika.newClaw.setPivotOrientation(angle);
+            isFinished = true;
         }
 
         Pika.drivetrain.drive(Math.hypot(yPower, xPower), theta, driveTurn, Pika.movementPower);
@@ -66,10 +74,35 @@ public class AlignWithSample extends Command {
 
     @Override
     public boolean isFinished() {
-        return (xError<=1 && yError<=0.7 && targetArea>0.15);
+         return isFinished;
     }
 
     @Override
     public void stop() {
+    }
+
+    public String getTelemetry() {
+        return "Arm: " + Pika.arm.getTelemetry() +
+        "\nEndEffectorClaw: " + Pika.newClaw.getTelemetry() +
+        "\nAngle: " + angle +
+        "\nError: " + yError +
+        "\ntX: " + tX +
+        "\ntY: " + tY +
+        "\nTarget Area: " + targetArea +
+        "\nxError: " + xError +
+        "\nHeadingError: " + headingError +
+        "\nxPower: " + xPower +
+        "\nyPower: " + yPower +
+        "\nTheta: " + theta +
+        "\nDriveTurn: " + driveTurn +
+        "\nMovementPower: " + Pika.movementPower +
+
+        "\nSlide Power: " + Pika.outtakeSlides.getTelemetry() +
+        "\nSlideError: " + slideError +
+
+        "\nReachedSlides: " + (Math.abs(slideError)<1.2) +
+        "\nReached Y: " + (Math.abs(yError)<3) +
+        "\nEnough Area: " + (targetArea>0.115) +
+        "\nArm Finished: " + Pika.arm.isFinished();
     }
 }

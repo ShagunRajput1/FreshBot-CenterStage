@@ -25,6 +25,7 @@ public class Camlight {
 
     // Sample Detection and April Tag Detection
     public double tX, tY, targetArea;
+    public double angle;
     public boolean targetFound;
     public int[] cornerIndices;
     public double contourHeight;
@@ -96,7 +97,7 @@ public class Camlight {
 //                    cornerPoints[index][1] = corners.get(cornerIndices[index]).get(1);
 //                }
 
-                double angle = Math.toDegrees(Math.atan2(deltaY, deltaX));
+                angle = Math.toDegrees(Math.atan2(deltaY, deltaX));
                 if (angle < 0) {
                     return 180+angle;
                 }
@@ -217,6 +218,13 @@ public class Camlight {
             targetArea = tag.getTargetArea();
         }
         return null;
+    }
+
+    public String getTelemetry() {
+        return "Tx: " + tX +
+                "\nTy: " + tY +
+                "\nArea: " + targetArea +
+                "\nAngle: " + angle;
     }
 
 }
