@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.commandBase.AutoIntakeFromSub;
 import org.firstinspires.ftc.teamcode.component.OuttakeSlides;
 import org.firstinspires.ftc.teamcode.core.Pika;
+import org.firstinspires.ftc.teamcode.pathing.MotionPlannerEdit;
 
 @TeleOp
 public class AutoIntakeTest extends LinearOpMode {
@@ -17,7 +18,7 @@ public class AutoIntakeTest extends LinearOpMode {
         Pika.init(hardwareMap, this, false);
         waitForStart();
         ToggleButtonReader xReader = new ToggleButtonReader(new GamepadEx(gamepad1), GamepadKeys.Button.X);
-        AutoIntakeFromSub autoIntake = new AutoIntakeFromSub();
+        AutoIntakeFromSub autoIntake = new AutoIntakeFromSub(new MotionPlannerEdit(Pika.drivetrain, Pika.localizer, hardwareMap));
         while (opModeIsActive()) {
             Pika.localizer.update();
             if (xReader.wasJustReleased()) {

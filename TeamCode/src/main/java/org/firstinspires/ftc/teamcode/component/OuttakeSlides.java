@@ -40,7 +40,7 @@ public class OuttakeSlides {
     private final int holdChangeConstant = 5000;
 
     public int targetPos;
-    public boolean holdSlides;
+    public boolean toUpdate;
 
 
     public enum TurnValue {
@@ -73,7 +73,7 @@ public class OuttakeSlides {
             slide1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             slide1.setTargetPosition(0);
         }
-        holdSlides = false;
+        toUpdate = true;
         targetPos = 0;
 
         stallCurrent = hwMap.voltageSensor.iterator().next().getVoltage()/2.2;
@@ -105,9 +105,8 @@ public class OuttakeSlides {
     }
 
     public void update() {
-        if (holdSlides)
-            setTargetPosition(getCurrentPosition());
-
+        if (!toUpdate)
+            return;
         error = getTargetPosition() - getCurrentPosition();
         pw = Range.clip(slideController.calculate(0, error), -1, 1);
         slide1Power = -pw;
@@ -227,5 +226,13 @@ public class OuttakeSlides {
 
     public double totalCurrent() {
         return slide1.getCurrent(CurrentUnit.AMPS) + slide2.getCurrent(CurrentUnit.AMPS);
+    }
+
+    public void resume() {
+        toUpdate = true;
+    }
+
+    public void pause() {
+        toUpdate = false;
     }
 }

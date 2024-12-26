@@ -79,12 +79,13 @@ public class MotionPlannerEdit {
     public static double kStatic = 0.32; //.19
     private final double translational_error = 0.35;
     private final double heading_error = 0.75;
-    private final double endTrajThreshhold = 5;
+    private final double endTrajThreshhold = 3;
     public static final double tIncrement = 0.05;
 
 
     boolean end = false;
     boolean setVelocity = false;
+    public boolean toUpdate;
 
     private ElapsedTime ACtimer;
 
@@ -132,6 +133,7 @@ public class MotionPlannerEdit {
 
     public void startTrajectory(Path spline) {
         this.spline = spline;
+        toUpdate = true;
         reset();
     }
 
@@ -179,7 +181,8 @@ public class MotionPlannerEdit {
                 "\n theta: " + y_power +
                 "\n Theta: " + theta +
                 "\n Magnitude: " + magnitude +
-                "\n DriveTurn: " + driveTurn;
+                "\n DriveTurn: " + driveTurn +
+                "\nToUpdate: " + toUpdate;
     }
 
     public double getPerpendicularError(){
@@ -200,6 +203,8 @@ public class MotionPlannerEdit {
     }
 
     public void update() {
+        if (!toUpdate)
+            return;
 
         localizer.update();
         updateACValues();
@@ -408,4 +413,11 @@ public class MotionPlannerEdit {
 
     }
 
+    public void pause() {
+        toUpdate = false;
+    }
+
+    public void resume() {
+        toUpdate = true;
+    }
 }

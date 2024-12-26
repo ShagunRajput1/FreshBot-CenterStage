@@ -61,7 +61,6 @@ public class Main extends LinearOpMode {
     GrabSpec grabSpec = new GrabSpec();
     Drop drop = new Drop();
     Hang hang = new Hang();
-    AlignWithSample alignWithSample = new AlignWithSample();
 
 
     @Override
@@ -203,13 +202,13 @@ public class Main extends LinearOpMode {
                 Pika.outtakeSlides.retractToIntake();
             }
 
-            if (limelightAlignmentButton.wasJustReleased()) {
-                if (aligning)
-                    alignWithSample.stop();
-                else
-                    alignWithSample.init();
-                aligning = !aligning;
-            }
+//            if (limelightAlignmentButton.wasJustReleased()) {
+//                if (aligning)
+//                    alignWithSample.stop();
+//                else
+//                    alignWithSample.init();
+//                aligning = !aligning;
+//            }
 
             if (aligning && readyToIntake()) {
                 Pika.newClaw.setPivotOrientation(Pika.limelight.getSampleOrientation());

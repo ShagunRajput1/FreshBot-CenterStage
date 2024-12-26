@@ -20,14 +20,21 @@ public class AlignWithSample extends Command {
     PIDController xControl = new PIDController(0.02, 0.0015, 0.0065);
     PIDController headingControl = new PIDController(0.018, 0.0001, 0);
     double error;
+    MotionPlannerEdit follower;
+    public AlignWithSample(MotionPlannerEdit follower) {
+        this.follower = follower;
+    }
+
     @Override
     public void init() {
         isFinished = false;
         yControl.setIntegrationBounds(-10000000, 10000000);
         xControl.setIntegrationBounds(-10000000, 10000000);
         headingControl.setIntegrationBounds(-10000000, 10000000);
-        this.targetX = Pika.localizer.getX();
+        this.targetX = Pika.localizer.getY();
         this.targetHeading = Pika.localizer.getHeading(Localizer.Angle.DEGREES);
+        Pika.outtakeSlides.toUpdate = false;
+        follower.pause();
     }
     @Override
     public void update() {
@@ -44,7 +51,7 @@ public class AlignWithSample extends Command {
         slideError = tX+9;
 
         slideError = (Math.abs(slideError)>1.2) ? slideError : 0;
-        xError = targetX- Pika.localizer.getX();
+        xError = targetX- Pika.localizer.getY();
         yError = tY;
         headingError = targetHeading - currentHeading;
 
@@ -57,7 +64,7 @@ public class AlignWithSample extends Command {
 
         driveTurn = headingControl.calculate(0, headingError);
 
-        theta = normalizeDegrees(Math.toDegrees(Math.atan2(yError, xError)) - currentHeading);
+        theta = normalizeDegrees(Math.toDegrees(Math.atan2(yError, xError)));
         if (targetArea>targetAreaThreshold)
             Pika.outtakeSlides.alignWithSample(slideError);
         else

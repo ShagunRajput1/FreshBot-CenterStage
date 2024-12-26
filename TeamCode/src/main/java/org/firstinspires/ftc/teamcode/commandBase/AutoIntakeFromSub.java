@@ -4,13 +4,15 @@ import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.commandSystem.ParallelCommand;
 import org.firstinspires.ftc.teamcode.commandSystem.RunCommand;
 import org.firstinspires.ftc.teamcode.commandSystem.SequentialCommand;
+import org.firstinspires.ftc.teamcode.commandSystem.Wait;
 import org.firstinspires.ftc.teamcode.component.Arm;
 import org.firstinspires.ftc.teamcode.component.FinalClaw;
 import org.firstinspires.ftc.teamcode.component.OuttakeSlides;
 import org.firstinspires.ftc.teamcode.core.Pika;
+import org.firstinspires.ftc.teamcode.pathing.MotionPlannerEdit;
 
 public class AutoIntakeFromSub extends SequentialCommand {
-    public AutoIntakeFromSub() {
+    public AutoIntakeFromSub(MotionPlannerEdit follower) {
         super(
                 new SlidesMove(OuttakeSlides.TurnValue.RETRACTED.getTicks()),
 
@@ -22,8 +24,12 @@ public class AutoIntakeFromSub extends SequentialCommand {
                         new RunCommand(()-> Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition()))
                 ),
                 new RunCommand(() ->Pika.outtakeSlides.resetEncoder()),
-                new AlignWithSample(),
-                new Grab()
+//                new SlidesMove(5000),
+                new AlignWithSample(follower),
+                new Wait(500),
+                new SpecialGrab(),
+                new RunCommand(()->Pika.outtakeSlides.resume()),
+                new RunCommand(follower::resume)
         );
     }
 
