@@ -227,4 +227,8 @@ public class Camlight {
                 "\nAngle: " + angle;
     }
 
+    public void stop() {
+        limelight.stop();
+    }
+
 }

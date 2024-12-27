@@ -22,9 +22,8 @@ public class DepositSample extends SequentialCommand {
                     new RunCommand(()-> Pika.newClaw.setPivotOrientation(180))
 
             ),
-            new Wait(100),
-            new RunCommand(()->Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition())),
-            new Wait(50)
+            new Wait(150),
+            new RunCommand(()->Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition()))
         );
     }
 }

@@ -24,7 +24,7 @@ public class AutoIntakeTest extends LinearOpMode {
             if (xReader.wasJustReleased()) {
                 autoIntake.init();
             }
-            if (autoIntake.isFinished() && Pika.arm.isFinished()) {
+            if (Pika.arm.isFinished()) {
                 Pika.outtakeSlides.update();
             }
             Pika.arm.update();

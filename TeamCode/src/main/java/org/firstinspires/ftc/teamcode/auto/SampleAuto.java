@@ -9,6 +9,8 @@ import org.firstinspires.ftc.teamcode.commandBase.DepositSample;
 import org.firstinspires.ftc.teamcode.commandBase.Grab;
 import org.firstinspires.ftc.teamcode.commandBase.IntakeSample;
 import org.firstinspires.ftc.teamcode.commandBase.PrepareOuttakeAuto;
+import org.firstinspires.ftc.teamcode.commandBase.PrepareOuttakeBasket;
+import org.firstinspires.ftc.teamcode.commandBase.PreparePark;
 import org.firstinspires.ftc.teamcode.commandBase.RetractAll;
 import org.firstinspires.ftc.teamcode.commandBase.SlidesMove;
 import org.firstinspires.ftc.teamcode.commandSystem.FollowTrajectory;
@@ -31,45 +33,48 @@ public class SampleAuto extends LinearOpMode {
     public static Point subBucketDeposit = new Point(10.65, 8.2);
     Bezier subToBucket = new Bezier(
             -45,
-            new Point(30, 20),
+            new Point(30, 18),
             subBucketDeposit
     );
 
-    public static boolean subSampleCollected = false;
+    public static boolean subCycleDone = false;
+
+    PreparePark park = new PreparePark();
 
 
     public static Point submersible = new Point(45, -18.8);
     @Override
     public void runOpMode() throws InterruptedException {
         Pika.init(hardwareMap, this, false);
+        subCycleDone = false;
         follower = new MotionPlannerEdit(Pika.drivetrain, Pika.localizer, hardwareMap);
 
-        while (opModeInInit()) {
-            bucket = new Bezier(-45,        // If heading is changed, make sure to change the setHeading later
-                    new Point(0, 0),
-                    bucketDeposit);
-            sample1 = new Bezier(0,
-                    bucketDeposit,
-                    new Point(13.89, 7.7209)
-            );
-            sample2 = new Bezier(0,
-                    bucketDeposit,
-                    new Point(12.2966, 18)
-            );
-            sample3 = new Bezier(14.46,
-                    bucketDeposit,
-                    new Point(15.10, 22.4));
 
-            submersibleIntake = new Bezier(-90,
-                    bucketDeposit,
-                    new Point(44, 3.2),
-                    new Point(45.9, -12.3),
-                    submersible);
+        bucket = new Bezier(-45,        // If heading is changed, make sure to change the setHeading later
+                new Point(0, 0),
+                bucketDeposit);
+        sample1 = new Bezier(0,
+                bucketDeposit,
+                new Point(13.89, 7.7209)
+        );
+        sample2 = new Bezier(0,
+                bucketDeposit,
+                new Point(12.2966, 18)
+        );
+        sample3 = new Bezier(14.6,
+                bucketDeposit,
+                new Point(15.10, 23.28));
 
-
+        submersibleIntake = new Bezier(-90,
+                bucketDeposit,
+                new Point(44, 3.2),
+                new Point(45.9, -12.3),
+                submersible);
 
 
-        }
+
+
+
 
         SequentialCommand zeroPlusFour = new SequentialCommand(
                 new ParallelCommand(new FollowTrajectory(follower, bucket)),
@@ -83,6 +88,7 @@ public class SampleAuto extends LinearOpMode {
 //                    new RunCommand(()->Pika.localizer.setHeading(-45))
 
                 ),
+                new Wait(100),
                 new ParallelCommand(
                         new IntakeSample(),
                         new FollowTrajectory(follower, sample1)
@@ -109,12 +115,14 @@ public class SampleAuto extends LinearOpMode {
 //                        new RunCommand(()->Pika.localizer.setHeading(-45))
 
                 ),
+                new Wait(100),
+
                 new ParallelCommand(
                         new IntakeSample(),
                         new FollowTrajectory(follower, sample2)
                 ),
                 new ParallelCommand(
-                        new SlidesMove(24510),
+                        new SlidesMove(23000),
                         new RunCommand(()->Pika.newClaw.setPivotOrientation(180))
                     ),
 
@@ -134,12 +142,13 @@ public class SampleAuto extends LinearOpMode {
 //                        new RunCommand(()->Pika.localizer.setY(bucketDeposit.getY())),
 //                        new RunCommand(()->Pika.localizer.setHeading(-45))
                 ),
+                new Wait(100),
                 new ParallelCommand(
                         new IntakeSample(),
                         new FollowTrajectory(follower, sample3)
                 ),
                 new ParallelCommand(
-                        new SlidesMove(18500),
+                        new SlidesMove(17500),
                         new RunCommand(()->Pika.newClaw.setPivotOrientation(180))
                 ),
                 new Grab(),
@@ -158,6 +167,7 @@ public class SampleAuto extends LinearOpMode {
 //                        new RunCommand(()->Pika.localizer.setY(bucketDeposit.getY())),
 //                        new RunCommand(()->Pika.localizer.setHeading(-45))
                 ),
+                new Wait(100),
                 new ParallelCommand(
                         new RetractAll(),
                         new FollowTrajectory(follower, submersibleIntake)
@@ -168,7 +178,13 @@ public class SampleAuto extends LinearOpMode {
         SequentialCommand subCycles = new SequentialCommand(
                 new AutoIntakeFromSub(follower),
                 new RetractAll(),
-                new FollowTrajectory(follower, subToBucket),
+                new ParallelCommand(
+                        new FollowTrajectory(follower, subToBucket),
+                        new SequentialCommand(
+                                new PrepareOuttakeBasket(),
+                                new Wait(800)
+                        )
+                ),
                 new PrepareOuttakeAuto(),
                 new DepositSample(OuttakeSlides.TurnValue.BUCKET2.getTicks()),
                 new ParallelCommand(
@@ -178,9 +194,12 @@ public class SampleAuto extends LinearOpMode {
 //                        new RunCommand(()->Pika.localizer.setY(bucketDeposit.getY())),
 //                        new RunCommand(()->Pika.localizer.setHeading(-45))
                 ),
+
                 new ParallelCommand(
-                    new RetractAll(),
-                    new FollowTrajectory(follower, submersibleIntake)
+                    new FollowTrajectory(follower, submersibleIntake),
+                    new SequentialCommand(
+                            new PreparePark()
+                    )
                 )
 
         );
@@ -202,19 +221,22 @@ public class SampleAuto extends LinearOpMode {
                 Pika.outtakeSlides.freeMove();
             }
 
-            if (zeroPlusFour.isFinished() && subCycles.isFinished()) {
+            if (zeroPlusFour.isFinished() && !subCycleDone) {
+                follower.setMovementPower(0.88);
+                subCycleDone = true;
                 subCycles.init();
             }
 
             subCycles.update();
-            telemetry.addData("", follower.getTelemetry());
-            telemetry.addData("", Pika.arm.getTelemetry());
-            telemetry.addData("", Pika.outtakeSlides.getTelemetry());
+            telemetry.addData("",follower.getTelemetry());
             telemetry.addData("", Pika.limelight.getTelemetry());
             telemetry.addData("CommandRunner: ", zeroPlusFour.isFinished());
+            telemetry.addData("SubCycle: ", subCycles.isFinished());
             telemetry.update();
             Pika.localizer.update();
         }
+        Pika.limelight.stop();
+
     }
 }
 

@@ -25,7 +25,7 @@ public class FinalClaw {
         }
     }
     public enum ArmPitch {
-        UP(0.6215), RETRACT(0.0975), GRAB(0.718), DEPOSIT(0.5565), APRIL(0.3095),
+        UP(0.6865), RETRACT(0.0975), GRAB(0.718), DEPOSIT(0.5475), APRIL(0.343),
         BEFORE_GRAB(0.66), SPEC_DEPOSIT(0.261), SPEC_GRAB(0.4725);
 
         private final double value;
@@ -40,7 +40,7 @@ public class FinalClaw {
     }
 
     public enum MiniPitch {
-        RETRACT(0.7265), GRAB(0.4675), DEPOSIT(0.98), SPEC_DEPOSIT(0.71),
+        RETRACT(0.793), GRAB(0.512), DEPOSIT(1), SPEC_DEPOSIT(0.71),
         SPEC_GRAB(0.379);
 
         private final double value;
@@ -89,8 +89,8 @@ public class FinalClaw {
         pivotPos = pos;
         pivot.setPosition(pos);
     }
-    public double orientationToPos(double angle) {
-        return (angle / 180) * (0.9-0.02) + 0.02;
+    public static double orientationToPos(double angle) {
+        return (angle / 180) * (0.904-0) + 0;
 
     }
 

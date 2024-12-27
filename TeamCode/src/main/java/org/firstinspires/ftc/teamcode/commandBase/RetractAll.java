@@ -13,13 +13,12 @@ public class RetractAll extends SequentialCommand {
     public RetractAll() {
         super(
                 new ParallelCommand(
-                        new RunCommand(()->Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.UP.getPosition())),
-                        new RunCommand(()->Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.RETRACT.getPosition())),
+                        new RunCommand(()->Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.RETRACT.getPosition())),
+                        new RunCommand(()->Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.GRAB.getPosition())),
                         new RunCommand(()->Pika.newClaw.setPivotOrientation(180))
                 ),
                 new SlidesMove(OuttakeSlides.TurnValue.RETRACTED.getTicks()),
                 new ArmMove(Arm.ArmPos.INTAKE.getPosition()),
-                new RunCommand(()-> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.APRIL.getPosition())),
                 new RunCommand(()->Pika.outtakeSlides.resetEncoder())
 
 

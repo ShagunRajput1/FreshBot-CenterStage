@@ -15,16 +15,16 @@ public class AutoIntakeFromSub extends SequentialCommand {
     public AutoIntakeFromSub(MotionPlannerEdit follower) {
         super(
                 new SlidesMove(OuttakeSlides.TurnValue.RETRACTED.getTicks()),
+                new RunCommand(()-> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.GRAB.getPosition())),
 
                 new ParallelCommand(
                         new ArmMove(Arm.ArmPos.INTAKE.getPosition()),
                         new RunCommand(()-> Pika.newClaw.setPivotOrientation(90)),
                         new RunCommand(()-> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.BEFORE_GRAB.getPosition())),
-                        new RunCommand(()-> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.GRAB.getPosition())),
                         new RunCommand(()-> Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition()))
                 ),
                 new RunCommand(() ->Pika.outtakeSlides.resetEncoder()),
-//                new SlidesMove(5000),
+                new SlidesMove(3000),
                 new AlignWithSample(follower),
                 new Wait(500),
                 new SpecialGrab(),

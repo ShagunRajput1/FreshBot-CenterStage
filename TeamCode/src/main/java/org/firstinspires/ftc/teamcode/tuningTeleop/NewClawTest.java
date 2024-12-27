@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.core.Pika;
 public class NewClawTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Pika.init(hardwareMap, this, false);
+        double pivotPos = Pika.newClaw.pivotPos;
         boolean clawOpen = true;
         double pos = FinalClaw.ArmPitch.RETRACT.getPosition();
         double miniPitchPos = FinalClaw.MiniPitch.RETRACT.getPosition();
@@ -49,14 +50,14 @@ public class NewClawTest extends LinearOpMode {
            }
 
 
-            if (gamepad1.right_trigger>0 && Pika.newClaw.orientation<=180) {
-                Pika.newClaw.setPivotOrientation(Pika.newClaw.orientation+(8*gamepad1.right_trigger));
+            if (gamepad1.right_trigger>0) {
+                pivotPos+=0.001;
             }
-            else if (gamepad1.left_trigger>0 && Pika.newClaw.orientation>=0) {
-                Pika.newClaw.setPivotOrientation(Pika.newClaw.orientation-(8*gamepad1.left_trigger));
+            else if (gamepad1.left_trigger>0) {
+                pivotPos -=0.001;
+
             }
-
-
+            Pika.newClaw.setPivot(pivotPos);
             Pika.newClaw.pitchA.setPosition(pos);
             Pika.newClaw.pitchB.setPosition(1-pos);
             Pika.newClaw.miniPitch.setPosition(miniPitchPos);
@@ -66,6 +67,7 @@ public class NewClawTest extends LinearOpMode {
             telemetry.addData("PitchBPos: ", (1-pos));
             telemetry.addData("MiniPitchPos: ", miniPitchPos);
             telemetry.addData("claw: ", clawPos);
+            telemetry.addData("PivotPos: ", Pika.newClaw.pivotPos);
             telemetry.update();
         }
     }

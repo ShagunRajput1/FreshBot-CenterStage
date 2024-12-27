@@ -75,11 +75,11 @@ public class MotionPlannerEdit {
     ElapsedTime loopTime;
 
 
-    private double movementPower = 0.7;
+    private double movementPower = 0.765;
     public static double kStatic = 0.32; //.19
     private final double translational_error = 0.35;
     private final double heading_error = 0.75;
-    private final double endTrajThreshhold = 3;
+    private final double endTrajThreshhold = 5;
     public static final double tIncrement = 0.05;
 
 
@@ -419,5 +419,9 @@ public class MotionPlannerEdit {
 
     public void resume() {
         toUpdate = true;
+    }
+
+    public void setMovementPower(double power) {
+        this.movementPower = power;
     }
 }

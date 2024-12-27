@@ -21,7 +21,7 @@ public class OuttakeSlides {
     public static double slideK = -0.0005;
     private double power = 0.4;
     public double pw;
-    public double ERROR = 2500;
+    public double ERROR = 1800;
     public int increment = 100;
 
     private final double zeroPwr = 0;
@@ -34,8 +34,8 @@ public class OuttakeSlides {
     public static int retractAmount = 7600;
     public static int extendAmountIntake = 3050;
     private final PIDController slideController = new PIDController(P, I,D); //0.006
-    private final PIDController sampleSlideController = new PIDController(0.007, 0.0005, 0);
-    private final double searchForSamplePower = 0.24;
+    private final PIDController sampleSlideController = new PIDController(0.007, 0.001, 0);
+    private final double searchForSamplePower = 0.325;
     public static double feedForward = 0.1;
     private final int holdChangeConstant = 5000;
 
@@ -46,9 +46,9 @@ public class OuttakeSlides {
     public enum TurnValue {
         RETRACTED(0),
         HANG_RETRACT(6000),
-        BUCKET2(40000),
+        BUCKET2(41500),
         HANG(24000), //880
-        MAX_EXTENSION_UP(39500),
+        MAX_EXTENSION_UP(42000),
         MAX_EXTENSION_DOWN(25000);
 
         final int ticks;

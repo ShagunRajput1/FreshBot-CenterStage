@@ -12,8 +12,9 @@ import org.firstinspires.ftc.teamcode.pathing.MotionPlannerEdit;
 public class AlignWithSample extends Command {
     double targetHeading, targetX;
     double xError, yError, headingError, targetArea;
-    double angle, slideError, tX, tY, currentHeading, xPower, yPower, driveTurn, theta;
-    double targetAreaThreshold = 0.115;
+    double angle = 180, slideError, tX, tY, currentHeading, xPower, yPower, driveTurn, theta;
+    double targetAreaThreshold = 0.05;
+    double angleMeasureTargetAreaThreshold = 0.125;
     double kStaticY = 0.2;
     boolean isFinished = false;
     PIDController yControl = new PIDController(0.01, 0.005, 0.0001);
@@ -38,15 +39,21 @@ public class AlignWithSample extends Command {
     }
     @Override
     public void update() {
-        if (isFinished)
+        if (isFinished) {
+            Pika.outtakeSlides.freeMove();
+            Pika.drivetrain.drive(0,0,0,0);
             return;
+        }
 
-        angle = Pika.limelight.getSampleOrientation();
+        Pika.limelight.getSampleOrientation();
         tX = Pika.limelight.tX;
         tY = Pika.limelight.tY;
         targetArea = Pika.limelight.targetArea;
         currentHeading = Pika.localizer.getHeading(Localizer.Angle.DEGREES);
 
+        if (targetArea>angleMeasureTargetAreaThreshold) {
+            angle = Pika.limelight.angle;
+        }
 
         slideError = tX+9;
 
