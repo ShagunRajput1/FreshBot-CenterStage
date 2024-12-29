@@ -18,6 +18,8 @@ public class Localizer {
     private Encoder leftEncoder;
     private List<LynxModule> allHubs;
 
+    private boolean toUpdate;
+
     private Imu imu;
 
     public static double TICKS_PER_REV = 2000;
@@ -71,7 +73,7 @@ public class Localizer {
         time = new ElapsedTime();
         imu = new Imu(hardwareMap);
         imu.initImuThread(opMode);
-
+        toUpdate = true;
         reset();
     }
 
@@ -87,6 +89,7 @@ public class Localizer {
         velocities = new double[length];
         accelerations = new double[length];
         time = new ElapsedTime();
+        toUpdate = true;
 
 
         rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "rf"));
@@ -126,6 +129,8 @@ public class Localizer {
     }
 
     public void update(){
+        if (!toUpdate)
+            return;
         elapsedTime = time.seconds();
         time.reset();
         calculateRawValues();
@@ -292,6 +297,14 @@ public class Localizer {
     }
     public void setHeading(double heading) {
         this.heading = heading;
+    }
+
+    public void pause() {
+        toUpdate = false;
+    }
+
+    public void resume() {
+        toUpdate = true;
     }
 
 }

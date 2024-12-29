@@ -11,13 +11,16 @@ import org.firstinspires.ftc.teamcode.pathing.MotionPlannerEdit;
 
 public class AlignWithSample extends Command {
     double targetHeading, targetX;
-    double xError, yError, headingError, targetArea;
+    double xError = 0, yError, headingError, targetArea;
     double angle = 180, slideError, tX, tY, currentHeading, xPower, yPower, driveTurn, theta;
     double targetAreaThreshold = 0.05;
-    double angleMeasureTargetAreaThreshold = 0.125;
+    double angleMeasureTargetAreaThreshold = 0.110;
+    // Decreased from 0.125 because did not detect orientation in one run
+
+
     double kStaticY = 0.2;
     boolean isFinished = false;
-    PIDController yControl = new PIDController(0.01, 0.005, 0.0001);
+    PIDController yControl = new PIDController(0.0125, 0.005, 0.0001);
     PIDController xControl = new PIDController(0.02, 0.0015, 0.0065);
     PIDController headingControl = new PIDController(0.018, 0.0001, 0);
     double error;
@@ -34,8 +37,9 @@ public class AlignWithSample extends Command {
         headingControl.setIntegrationBounds(-10000000, 10000000);
         this.targetX = Pika.localizer.getY();
         this.targetHeading = Pika.localizer.getHeading(Localizer.Angle.DEGREES);
-        Pika.outtakeSlides.toUpdate = false;
+        Pika.outtakeSlides.pause();
         follower.pause();
+        xError = 0;
     }
     @Override
     public void update() {
@@ -58,7 +62,7 @@ public class AlignWithSample extends Command {
         slideError = tX+9;
 
         slideError = (Math.abs(slideError)>1.2) ? slideError : 0;
-        xError = targetX- Pika.localizer.getY();
+//        xError = targetX- Pika.localizer.getY();
         yError = tY;
         headingError = targetHeading - currentHeading;
 
@@ -79,6 +83,7 @@ public class AlignWithSample extends Command {
 
         if (targetArea>targetAreaThreshold && Math.abs(slideError)<1.2 && Math.abs(yError)<3) {
             Pika.newClaw.setPivotOrientation(angle);
+            Pika.outtakeSlides.freeMove();
             isFinished = true;
         }
 

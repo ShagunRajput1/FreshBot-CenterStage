@@ -31,7 +31,7 @@ public class MotionPlannerEdit {
 //    public static PIDController translationalControlEnd = new PIDController(0.025,0.02,0.1);
     public static TweakedPID translationalControlEndX = new TweakedPID(0.02,0.0015, 0);
     public static TweakedPID translationalControlEndY = new TweakedPID(0.03, 0.0002, 0);  // i term modified but might revert
-    public static TweakedPID headingControlEnd = new TweakedPID(0.018, 0.00012, 0); // hope
+    public static TweakedPID headingControlEnd = new TweakedPID(0.015, 0.00012, 0); // hope
 
 
     private int index;
@@ -68,7 +68,7 @@ public class MotionPlannerEdit {
 
     public static double kStatic_X = 0.118; //.19
     public static double kStatic_Y = 0.218; //.19
-    public static double kStatic_Turn = 0.1; //.19
+    public static double kStatic_Turn = 0.089; //.19
     double ac;
 
     double numLoops;

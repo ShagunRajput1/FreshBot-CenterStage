@@ -13,7 +13,7 @@ public class FinalClaw {
     public double clawPos, pitchPos, miniPitchPos, pivotPos;
     public double orientation;
     public enum ClawPosition {
-        OPEN(0.058), CLOSE(0.295), LITTLE_OPEN(0.1205);
+        OPEN(0.058), CLOSE(0.306), LITTLE_OPEN(0.1205);
         private final double value;
 
         ClawPosition(double value) {
@@ -25,8 +25,8 @@ public class FinalClaw {
         }
     }
     public enum ArmPitch {
-        UP(0.6865), RETRACT(0.0975), GRAB(0.718), DEPOSIT(0.5475), APRIL(0.343),
-        BEFORE_GRAB(0.66), SPEC_DEPOSIT(0.261), SPEC_GRAB(0.4725);
+        UP(0.6865), RETRACT(0.1065), GRAB(0.7), DEPOSIT(0.5375), APRIL(0.325),
+        BEFORE_GRAB(0.65), SPEC_DEPOSIT(0.261), SPEC_GRAB(0.4725);
 
         private final double value;
 
@@ -40,8 +40,8 @@ public class FinalClaw {
     }
 
     public enum MiniPitch {
-        RETRACT(0.793), GRAB(0.512), DEPOSIT(1), SPEC_DEPOSIT(0.71),
-        SPEC_GRAB(0.379);
+        RETRACT(0.552), GRAB(0.295), DEPOSIT(0.7545), SPEC_DEPOSIT(0.71),
+        SPEC_GRAB(0.379), BEFORE_GRAB(0.2395);
 
         private final double value;
 
