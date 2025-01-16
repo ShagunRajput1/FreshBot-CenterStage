@@ -19,11 +19,13 @@ public class DepositSample extends SequentialCommand {
             new ParallelCommand(
                     new RunCommand(()->Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.DEPOSIT.getPosition())),
                     new RunCommand(()-> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.DEPOSIT.getPosition())),
-                    new RunCommand(()-> Pika.newClaw.setPivotOrientation(180))
+                    new RunCommand(()-> Pika.newClaw.setPivotOrientation(90))
 
             ),
-            new Wait(280),
-            new RunCommand(()->Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition()))
+            new RunCommand(()-> Pika.newClaw.setPivotOrientation(180)),
+            new Wait(250),
+            new RunCommand(()->Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition())),
+            new Wait(50)
         );
     }
 }

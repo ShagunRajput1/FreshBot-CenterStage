@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commandBase.AutoIntakeFromSub;
+import org.firstinspires.ftc.teamcode.component.Camlight;
 import org.firstinspires.ftc.teamcode.component.OuttakeSlides;
 import org.firstinspires.ftc.teamcode.core.Pika;
 import org.firstinspires.ftc.teamcode.pathing.MotionPlannerEdit;
@@ -15,6 +16,7 @@ import org.firstinspires.ftc.teamcode.pathing.MotionPlannerEdit;
 public class AutoIntakeTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
+        Camlight.red = true;
         Pika.init(hardwareMap, this, false);
         waitForStart();
         ToggleButtonReader xReader = new ToggleButtonReader(new GamepadEx(gamepad1), GamepadKeys.Button.X);
@@ -24,9 +26,7 @@ public class AutoIntakeTest extends LinearOpMode {
             if (xReader.wasJustReleased()) {
                 autoIntake.init();
             }
-            if (Pika.arm.isFinished()) {
-                Pika.outtakeSlides.update();
-            }
+
             Pika.arm.update();
             autoIntake.update();
             xReader.readValue();

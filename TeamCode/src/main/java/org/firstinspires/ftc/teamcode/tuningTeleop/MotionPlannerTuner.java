@@ -28,10 +28,11 @@ public class MotionPlannerTuner extends LinearOpMode {
     public static double targetX, targetY;
     public static double targetHeading;
 
-    public static double kX = 0.08, pX = 0.02, iX = 0.0015, dX = 0.000;
-    public static double kY = 0.14, pY = 0.03, iY = 0.0002, dY = 0;
-    public static double kT = 0.085, pT = 0.018, iT = 0.00012, dT;
+    public static double kX = 0.118, pX = 0.02, iX = 0.0015, dX = 0.000;
+    public static double kY = 0.218, pY = 0.03, iY = 0.0002, dY = 0;
+    public static double kT = 0.089, pT = 0.015, iT = 0.00012, dT;
     public static double pTr = 0.01, iTr = 0.0001, dTr;
+    public static double movementPower = 0.8;
     Bezier testPath;
     Bezier returnPath;
     MotionPlannerEdit follower;
@@ -59,6 +60,7 @@ public class MotionPlannerTuner extends LinearOpMode {
             }
             follower.update();
             follower.setTerms(kX, kY, kT, pX, pY, pT, iX, iY, iT, dX, dY, dT, pTr, iTr, dTr);
+            follower.setMovementPower(movementPower);
             telemetry.addData("", follower.getTelemetry());
             telemetry.update();
             localizer.update();

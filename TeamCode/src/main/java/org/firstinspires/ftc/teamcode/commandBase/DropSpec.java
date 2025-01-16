@@ -8,18 +8,17 @@ import org.firstinspires.ftc.teamcode.component.FinalClaw;
 import org.firstinspires.ftc.teamcode.component.OuttakeSlides;
 import org.firstinspires.ftc.teamcode.core.Pika;
 
-public class PrepareOuttakeAuto extends SequentialCommand {
-    public PrepareOuttakeAuto() {
+public class DropSpec extends SequentialCommand {
+    public DropSpec() {
         super(
                 new SlidesMove(OuttakeSlides.TurnValue.RETRACTED.getTicks()),
                 new ParallelCommand(
-                        new RunCommand(() -> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.RETRACT.getPosition())),
-                        new RunCommand(() -> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.UP.getPosition())),
-                        new RunCommand(()->Pika.newClaw.setPivotOrientation(180)),
-                        new ArmMove(Arm.ArmPos.OUTTAKE.getPosition())
+                        new ArmMove(Arm.ArmPos.SPEC_DEPOSIT.getPosition()),
+                        new RunCommand(()-> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.DEPOSIT.getPosition())),
+                        new RunCommand(()-> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.DEPOSIT.getPosition())),
+                        new RunCommand(()-> Pika.newClaw.setPivotOrientation(180))
                 ),
-                new RunCommand(()->Pika.outtakeSlides.resetEncoder()),
-                new SlidesMove(OuttakeSlides.TurnValue.BUCKET2.getTicks())
+                new RunCommand(()-> Pika.outtakeSlides.resetEncoder())
         );
     }
 }

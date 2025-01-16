@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.component;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
@@ -35,9 +37,10 @@ public class Camlight {
     public double deltaX;
     public boolean tiltedLeft;
     int pipelineIndex;
+    public static boolean red;
 
     private enum Pipeline {
-        YellowSample(0), NeuralDetector(5), AprilTag(7);
+        YELLOW_AND_RED(0), YELLOW_AND_BLUE(1), NeuralDetector(5), AprilTag(7);
         private final int index;
         Pipeline(int val) {
             this.index = val;
@@ -50,19 +53,28 @@ public class Camlight {
 
     public void init(HardwareMap hwMap) {
         limelight = hwMap.get(Limelight3A.class, "limelight");
-        pipelineIndex = Pipeline.YellowSample.index;
+        pipelineIndex = Pipeline.YELLOW_AND_RED.index;
 //        telemetry.setMsTransmissionInterval(11); // Idk if we needs this
-        limelight.pipelineSwitch(Pipeline.YellowSample.index); // or this3
+        if (red)
+            limelight.pipelineSwitch(Pipeline.YELLOW_AND_RED.index); // or this3
+        else
+            limelight.pipelineSwitch(Pipeline.YELLOW_AND_BLUE.index);
+
+
         limelight.start();
         cornerPoints = new double[4][2];
     }
 
     public double getSampleOrientation() {
         targetFound = false;
-        if (pipelineIndex != Pipeline.YellowSample.index) {
-            pipelineIndex = Pipeline.YellowSample.index;
-            limelight.pipelineSwitch(Pipeline.YellowSample.index);
-        }
+//        if (red && pipelineIndex != Pipeline.YELLOW_AND_RED.index) {
+//            pipelineIndex = Pipeline.YELLOW_AND_RED.index;
+//            limelight.pipelineSwitch(Pipeline.YELLOW_AND_RED.index);
+//        }
+//        else if (pipelineIndex != Pipeline.YELLOW_AND_BLUE.index) {
+//            pipelineIndex = Pipeline.YELLOW_AND_BLUE.index;
+//            limelight.pipelineSwitch(Pipeline.YELLOW_AND_BLUE.index);
+//        }
 
         LLResult result = limelight.getLatestResult();
         tX = 0;

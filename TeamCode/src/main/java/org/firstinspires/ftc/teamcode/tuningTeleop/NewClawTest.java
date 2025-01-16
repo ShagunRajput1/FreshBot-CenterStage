@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.component.Arm;
 import org.firstinspires.ftc.teamcode.component.FinalClaw;
 import org.firstinspires.ftc.teamcode.core.Pika;
 
@@ -13,11 +14,12 @@ import org.firstinspires.ftc.teamcode.core.Pika;
 public class NewClawTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Pika.init(hardwareMap, this, false);
-        double pivotPos = Pika.newClaw.pivotPos;
+        double pivotPos = 180;
         boolean clawOpen = true;
         double pos = FinalClaw.ArmPitch.RETRACT.getPosition();
         double miniPitchPos = FinalClaw.MiniPitch.RETRACT.getPosition();
         double clawPos = FinalClaw.ClawPosition.CLOSE.getPosition();
+        int armPos = Arm.ArmPos.INTAKE.getPosition();
         GamepadEx driverOp = new GamepadEx(gamepad1);
         ToggleButtonReader xReader = new ToggleButtonReader(
                 driverOp, GamepadKeys.Button.X
@@ -32,6 +34,12 @@ public class NewClawTest extends LinearOpMode {
                 pos -=0.0005;
             }
 
+            if (gamepad1.dpad_right) {
+                armPos+=5;
+            }
+            else if (gamepad1.dpad_left) {
+                armPos-=5;
+            }
             if (gamepad1.a) {
                 miniPitchPos += 0.0005;
             }
@@ -50,17 +58,19 @@ public class NewClawTest extends LinearOpMode {
            }
 
 
-            if (gamepad1.right_trigger>0) {
-                pivotPos+=0.001;
+            if (gamepad1.right_trigger>0 && pivotPos<=180) {
+                pivotPos+=0.05;
             }
-            else if (gamepad1.left_trigger>0) {
-                pivotPos -=0.001;
+            else if (gamepad1.left_trigger>0 && pivotPos>0) {
+                pivotPos -=0.05;
 
             }
-            Pika.newClaw.setPivot(pivotPos);
+            Pika.newClaw.setPivotOrientation(pivotPos);
             Pika.newClaw.pitchA.setPosition(pos);
             Pika.newClaw.pitchB.setPosition(1-pos);
             Pika.newClaw.miniPitch.setPosition(miniPitchPos);
+            Pika.arm.setTargetPosition(armPos);
+            Pika.arm.update();
 
             xReader.readValue();
             telemetry.addData("PitchAPos: ", pos);
@@ -68,6 +78,7 @@ public class NewClawTest extends LinearOpMode {
             telemetry.addData("MiniPitchPos: ", miniPitchPos);
             telemetry.addData("claw: ", clawPos);
             telemetry.addData("PivotPos: ", Pika.newClaw.pivotPos);
+            telemetry.addData("Arm: ", Pika.arm.getTelemetry());
             telemetry.update();
         }
     }

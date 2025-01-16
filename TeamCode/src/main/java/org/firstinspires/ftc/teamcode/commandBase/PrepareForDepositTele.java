@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.component.FinalClaw;
 import org.firstinspires.ftc.teamcode.component.OuttakeSlides;
 import org.firstinspires.ftc.teamcode.core.Pika;
 
-public class PrepareForDeposit extends SequentialCommand {
-    public PrepareForDeposit() {
+public class PrepareForDepositTele extends SequentialCommand {
+    public PrepareForDepositTele() {
         super(
                 new SlidesMove(OuttakeSlides.TurnValue.RETRACTED.getTicks()),
                 new ParallelCommand(
@@ -18,9 +18,13 @@ public class PrepareForDeposit extends SequentialCommand {
                         new RunCommand(()->Pika.newClaw.setPivotOrientation(180))
                 ),
 
-                new ArmMove(Arm.ArmPos.OUTTAKE.getPosition()),
+                new ArmMove(Arm.ArmPos.TELEOP_DEPOSIT.getPosition()),
                 new RunCommand(()->Pika.outtakeSlides.resetEncoder()),
-                new SlidesMove(OuttakeSlides.TurnValue.BUCKET2.getTicks())
+                new SlidesMove(OuttakeSlides.TurnValue.BUCKET2_TELEOP.getTicks()),
+                new ParallelCommand(
+                        new RunCommand(() -> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.AFTER_GRAB.getPosition())),
+                        new RunCommand(() -> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.DEPOSIT.getPosition()))
+                )
         );
     }
 }

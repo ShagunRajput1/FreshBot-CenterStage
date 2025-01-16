@@ -14,7 +14,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.commandBase.Grab;
 import org.firstinspires.ftc.teamcode.commandBase.IntakeSample;
+import org.firstinspires.ftc.teamcode.commandBase.IntakeSampleTeleOp;
 import org.firstinspires.ftc.teamcode.component.Arm;
+import org.firstinspires.ftc.teamcode.component.Camlight;
 import org.firstinspires.ftc.teamcode.component.OuttakeSlides;
 import org.firstinspires.ftc.teamcode.component.localizer.Localizer;
 import org.firstinspires.ftc.teamcode.core.Pika;
@@ -43,8 +45,9 @@ public class AlignWithSample extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        Camlight.red = true;
         Pika.init(hardwareMap, this, false);
-        IntakeSample intakeSample = new IntakeSample();
+        IntakeSampleTeleOp intakeSample = new IntakeSampleTeleOp();
         Grab grab = new Grab();
         double voltage = 0;
         final double targetAreaThreshold = 0.1;

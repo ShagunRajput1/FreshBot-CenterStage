@@ -23,7 +23,7 @@ public class SlideTuning extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Pika.init(hardwareMap, this, false);
         int holdPos = 0;
-        Pika.arm.setTargetPosition(Arm.ArmPos.OUTTAKE.getPosition());
+        Pika.arm.setTargetPosition(Arm.ArmPos.INTAKE.getPosition());;
         waitForStart();
 
         while (opModeIsActive()) {

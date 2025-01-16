@@ -19,7 +19,6 @@ public class SlidesMove extends Command {
     @Override
     public void update() {
         Pika.outtakeSlides.setTargetPosition(ticks);
-        Pika.outtakeSlides.update();
     }
 
     @Override

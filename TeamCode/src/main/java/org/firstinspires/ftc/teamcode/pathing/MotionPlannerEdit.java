@@ -14,6 +14,8 @@ import org.firstinspires.ftc.teamcode.pathing.Bezier;
 import org.firstinspires.ftc.teamcode.pathing.Point;
 import org.firstinspires.ftc.teamcode.util.TweakedPID;
 
+import java.util.Arrays;
+
 @Config
 public class MotionPlannerEdit {
 
@@ -24,7 +26,7 @@ public class MotionPlannerEdit {
     private Localizer localizer;
 
     //    private PIDController translationalControl = new PIDController(0.022,0.001,0.03);
-    public static TweakedPID translationalControl = new TweakedPID(0.01, 0.0001, 0.01);
+    public static TweakedPID translationalControl = new TweakedPID(0.01, 0.0001, 0.0);
     public static PIDController headingControl = new PIDController(0.01, 0.0001, 0);
 
     //    private PIDController translationalControlEnd = new PIDController(0.022,0.001,0.03);
@@ -66,7 +68,7 @@ public class MotionPlannerEdit {
     double radius;
     public final static double THE_HOLY_CONSTANT = 0.0006; //0.001
 
-    public static double kStatic_X = 0.118; //.19
+    public static double kStatic_X = 0.1; //.19
     public static double kStatic_Y = 0.218; //.19
     public static double kStatic_Turn = 0.089; //.19
     double ac;
@@ -77,9 +79,9 @@ public class MotionPlannerEdit {
 
     private double movementPower = 0.765;
     public static double kStatic = 0.32; //.19
-    private final double translational_error = 0.35;
-    private final double heading_error = 0.75;
-    private final double endTrajThreshhold = 5;
+    private double translational_error = 0.35;
+    private double heading_error = 0.75;
+    private final double endTrajThreshhold = 15;
     public static final double tIncrement = 0.05;
 
 
@@ -148,12 +150,16 @@ public class MotionPlannerEdit {
 
 
     public String getTelemetry(){
+        if(!toUpdate)
+            return "";
+
+
         return "Index: " + index +
                 "\n Targetheading: " + targetHeading +
-                "\n Derivative: " + derivative.getX() + ", " + derivative.getY() + " " +
-                "\n Derivative: " + Math.hypot(derivative.getX(), derivative.getY()) + " " +
-                "\n Heading Error: " + (targetHeading-currentHeading) +
-                "\n Approx Length: " + (spline.approximateLength()) +
+//                "\n Derivative: " + derivative.getX() + ", " + derivative.getY() + " " +
+//                "\n Derivative: " + Math.hypot(derivative.getX(), derivative.getY()) + " " +
+//                "\n Heading Error: " + (targetHeading-currentHeading) +
+//                "\n Approx Length: " + (spline.approximateLength()) +
 //                "\n Phase: " + end +
 //                "\n Stop " + (distanceLeft < estimatedStopping) +
 //                "\n Distance left: " + distanceLeft +
@@ -161,7 +167,7 @@ public class MotionPlannerEdit {
 //                "\n Distance left (y): " + (spline.getEndPoint().getY()-y) +
 //                "\n Perpendicular error: " + (perpendicularError) +
 //                "\n Heading: " + (heading - currentHeading) +
-                "\n Estimated Stopping " + estimatedStopping +
+//                "\n Estimated Stopping " + estimatedStopping +
                 "\n End " + end +
 //                "\n " + drive.getTelemetry() +
                 "\n Reached X: " + reachedXTarget() +
@@ -169,20 +175,20 @@ public class MotionPlannerEdit {
                 "\n Reached Heading: " + reachedHeadingTarget() +
                 "\n Reached Translational: " + reachedTranslationalTarget() +
                 "\n Finished " + isFinished()+
-                "\n Loop Rate " + numLoops/loopTime.seconds() +
                 "\n Heading: " + currentHeading +
                 "\n X: " + localizer.getX() +
                 "\n Y: " + localizer.getY() +
-                "\n X_error: " + x_error +
-                "\n Y_error: " + y_error +
-                "\n Translational Error: " + permissible_translational_error +
+//                "\n X_error: " + x_error +
+//                "\n Y_error: " + y_error +
+//                "\n Translational Error: " + permissible_translational_error +
                 "\n xPower: " + x_power +
                 "\n yPower: " + y_power +
-                "\n theta: " + y_power +
+//                "\n theta: " + y_power +
                 "\n Theta: " + theta +
                 "\n Magnitude: " + magnitude +
                 "\n DriveTurn: " + driveTurn +
                 "\nToUpdate: " + toUpdate;
+//                "\nPID Terms X: " + Arrays.toString(translationalControlEndX.getCoefficients());
     }
 
     public double getPerpendicularError(){
@@ -393,6 +399,14 @@ public class MotionPlannerEdit {
         return (Math.abs(targetHeading - currentHeading)<= heading_error);
     }
 
+    public void setPermissibleTranslationalError(double error) {
+        this.translational_error = error;
+    }
+
+    public void setPermissibleHeadingError(double error) {
+        this.heading_error = error;
+    }
+
     private double distance(Point p1, Point p2){
         return Math.hypot(p1.getX()-p2.getX(), p1.getY()-p2.getY());
     }
@@ -414,6 +428,7 @@ public class MotionPlannerEdit {
     }
 
     public void pause() {
+        drive.drive(0, 0, 0, 0);
         toUpdate = false;
     }
 

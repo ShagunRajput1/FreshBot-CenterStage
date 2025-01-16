@@ -15,8 +15,9 @@ public class SpecialGrab extends SequentialCommand {
                         new RunCommand(()->Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.GRAB.getPosition())),
                         new RunCommand(() -> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.GRAB.getPosition()))
                 ),
-                new Wait(200),
+                new Wait(300),
                 new RunCommand(() -> Pika.newClaw.setClaw(FinalClaw.ClawPosition.CLOSE.getPosition())),
+                new Wait(100),
                 new RunCommand(() -> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.BEFORE_GRAB.getPosition()))
         );
     }

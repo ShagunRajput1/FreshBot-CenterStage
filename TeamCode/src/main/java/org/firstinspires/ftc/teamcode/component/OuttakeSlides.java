@@ -34,22 +34,25 @@ public class OuttakeSlides {
     public static int retractAmount = 7600;
     public static int extendAmountIntake = 3050;
     private final PIDController slideController = new PIDController(P, I,D); //0.006
-    private final PIDController sampleSlideController = new PIDController(0.008, 0.0015, 0);
+    private final PIDController sampleSlideController = new PIDController(0.008, 0.0012, 0);
     private final double searchForSamplePower = 0.325;
     public static double feedForward = 0.1;
     private final int holdChangeConstant = 5000;
+    public int currentPos;
 
     public int targetPos;
     public boolean toUpdate;
 
 
     public enum TurnValue {
-        RETRACTED(0),
+        RETRACTED(500),
         HANG_RETRACT(6000),
-        BUCKET2(41200),
+        BUCKET2(40500),
+        BUCKET2_TELEOP(36500),
         HANG(24000), //880
         MAX_EXTENSION_UP(42000),
-        MAX_EXTENSION_DOWN(25000);
+        MAX_EXTENSION_DOWN(25000),
+        SPEC_DEPOSIT(9500);
 
         final int ticks;
 
@@ -90,14 +93,18 @@ public class OuttakeSlides {
 
 
     public void setTargetPosition(int targetPos){
+        this.targetPos = targetPos;
         holdPos = targetPos;
         slide1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         slide2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         slide1.setTargetPosition(targetPos);
     }
-    public int getCurrentPosition() {return slide1.getCurrentPosition();}
+    public int getCurrentPosition() {
+        currentPos = slide1.getCurrentPosition();
+        return currentPos;
+    }
     public double getTargetPosition(){
-        return slide1.getTargetPosition();
+        return targetPos;
     }
 
     public void resetPID() {
@@ -105,9 +112,16 @@ public class OuttakeSlides {
     }
 
     public void update() {
+        int currentPos = getCurrentPosition();
         if (!toUpdate)
             return;
-        error = getTargetPosition() - getCurrentPosition();
+        error = getTargetPosition() - currentPos;
+        if (targetPos == TurnValue.RETRACTED.getTicks() && currentPos < TurnValue.RETRACTED.getTicks()) {
+            slide1.setPower(0);
+            slide2.setPower(0);
+            return;
+        }
+
         pw = Range.clip(slideController.calculate(0, error), -1, 1);
         slide1Power = -pw;
         slide2Power = pw;
@@ -166,7 +180,7 @@ public class OuttakeSlides {
     }
 
     public boolean isFinished(){
-        return Math.abs(slide1.getCurrentPosition()- slide1.getTargetPosition())<=ERROR;
+        return Math.abs(currentPos - targetPos)<=ERROR;
     }
 
     public boolean isStalling(){
@@ -219,6 +233,7 @@ public class OuttakeSlides {
     public String getTelemetry() {
         return  "TargetPos: " + getTargetPosition() +
                 "\nCurrentPos: " + getCurrentPosition() +
+                "\nError:" + error +
                 "\nSlide1 Pw:" + slide1.getPower() +
                 "\nSlide2 Pw: " + slide2.getPower() +
                 "\nSlides Finished: " + isFinished();

@@ -24,7 +24,8 @@ public class Arm {
 
 
     public enum ArmPos {
-        INTAKE(0), OUTTAKE(1360), HANG(450), PREP_HANG(1650), STUPID_TAIL(1530);
+        INTAKE(0), OUTTAKE(1360), HANG(450), PREP_HANG(1650), STUPID_TAIL(1530),
+        SPEC_DEPOSIT(1360), TELEOP_DEPOSIT(1435);
         private final int value;
         ArmPos(int val) {
             this.value = val;
@@ -85,7 +86,7 @@ public class Arm {
     }
 
     public boolean isFinished(){
-        return Math.abs(armMotor.getCurrentPosition()- targetPosition)<=ERROR;
+        return Math.abs(currentPosition- targetPosition)<=ERROR;
     }
 
     public double totalCurrent() {

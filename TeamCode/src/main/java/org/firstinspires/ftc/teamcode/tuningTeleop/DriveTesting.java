@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.tuningTeleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.component.localizer.Localizer;
 import org.firstinspires.ftc.teamcode.core.Pika;
@@ -12,6 +13,7 @@ public class DriveTesting extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         Pika.init(hardwareMap, this, false);
+        ElapsedTime timer = new ElapsedTime();
         Pika.movementPower = 0.55;
 //        Localizer localizer = new Localizer(this, hardwareMap);
         waitForStart();
@@ -43,8 +45,10 @@ public class DriveTesting extends LinearOpMode {
             telemetry.addData("LeftEnc: ", Pika.localizer.getLeftEncoderPosition());
             telemetry.addData("PerpEnc: ", Pika.localizer.getFwdEncoderPosition());
             telemetry.addData("DriveTurn: ", driveTurn);
+            telemetry.addData("Timer: ", timer.milliseconds());
             telemetry.addData("", Pika.drivetrain.getTelemetry());
             telemetry.update();
+            timer.reset();
 
 
             // Outtake Slides

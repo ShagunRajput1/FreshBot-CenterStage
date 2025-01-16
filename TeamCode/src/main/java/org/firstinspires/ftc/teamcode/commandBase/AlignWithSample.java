@@ -87,7 +87,7 @@ public class AlignWithSample extends Command {
             isFinished = true;
         }
 
-        Pika.drivetrain.drive(Math.hypot(yPower, xPower), theta, driveTurn, Pika.movementPower);
+        Pika.drivetrain.drive(Math.hypot(yPower, xPower), theta, driveTurn, 0.725);
 
     }
 

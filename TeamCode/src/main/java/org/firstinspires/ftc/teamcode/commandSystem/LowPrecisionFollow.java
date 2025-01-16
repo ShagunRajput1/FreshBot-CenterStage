@@ -1,17 +1,13 @@
 package org.firstinspires.ftc.teamcode.commandSystem;
 
-
-import org.firstinspires.ftc.teamcode.pathing.Bezier;
-import org.firstinspires.ftc.teamcode.pathing.CatmullRom;
-import org.firstinspires.ftc.teamcode.pathing.MotionPlanner;
 import org.firstinspires.ftc.teamcode.pathing.MotionPlannerEdit;
 import org.firstinspires.ftc.teamcode.pathing.Path;
 
-public class FollowTrajectory extends Command {
+public class LowPrecisionFollow extends Command {
     MotionPlannerEdit mp;
     Path traj;
 
-    public FollowTrajectory(MotionPlannerEdit mp, Path traj) {
+    public LowPrecisionFollow(MotionPlannerEdit mp, Path traj) {
         this.mp = mp;
         this.traj = traj;
     }
@@ -23,7 +19,9 @@ public class FollowTrajectory extends Command {
     }
 
     @Override
-    public void update() {}
+    public void update() {
+        mp.update();
+    }
 
     @Override
     public boolean isFinished() {
@@ -33,3 +31,4 @@ public class FollowTrajectory extends Command {
     @Override
     public void stop() {}
 }
+

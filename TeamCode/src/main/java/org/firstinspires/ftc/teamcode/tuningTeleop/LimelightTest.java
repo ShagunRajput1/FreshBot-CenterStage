@@ -11,6 +11,7 @@ public class LimelightTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException
     {
+        Camlight.red = true;
         limelight = new Camlight();
         limelight.init(hardwareMap);
         /*
