@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.commandBase.ActualTeleOpHang;
 import org.firstinspires.ftc.teamcode.commandBase.AutoIntakeFromSub;
 import org.firstinspires.ftc.teamcode.commandBase.Drop;
 import org.firstinspires.ftc.teamcode.commandBase.GrabSpec;
@@ -18,6 +19,7 @@ import org.firstinspires.ftc.teamcode.commandBase.PrepareForDepositTele;
 import org.firstinspires.ftc.teamcode.commandBase.PrepareOuttakeBasket;
 import org.firstinspires.ftc.teamcode.commandBase.PrepareOuttakeSpec;
 import org.firstinspires.ftc.teamcode.commandBase.RetractAll;
+import org.firstinspires.ftc.teamcode.commandBase.SpecDepositTeleOp;
 import org.firstinspires.ftc.teamcode.commandBase.TeleGrab;
 import org.firstinspires.ftc.teamcode.commandSystem.FollowTrajectory;
 import org.firstinspires.ftc.teamcode.component.Arm;
@@ -58,7 +60,8 @@ public class Main extends LinearOpMode {
     TeleGrab grab = new TeleGrab();
     GrabSpec grabSpec = new GrabSpec();
     Drop drop = new Drop();
-    Hang hang = new Hang();
+    ActualTeleOpHang hang = new ActualTeleOpHang();
+    SpecDepositTeleOp depositSpec = new SpecDepositTeleOp();
 
 
     @Override
@@ -70,7 +73,7 @@ public class Main extends LinearOpMode {
         GamepadEx driverOp = new GamepadEx(gamepad1);
         GamepadEx driverOp2 = new GamepadEx(gamepad2);
         
-        ToggleButtonReader xReader = new ToggleButtonReader(
+        ToggleButtonReader hangButton = new ToggleButtonReader(
                 driverOp, GamepadKeys.Button.X
         );
 
@@ -94,6 +97,10 @@ public class Main extends LinearOpMode {
         ToggleButtonReader modeButton = new ToggleButtonReader(
                 driverOp2, GamepadKeys.Button.X
         );
+
+        ToggleButtonReader dpadUp = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.DPAD_UP
+        );
         
         FollowTrajectory goToBucket = new FollowTrajectory(mp, new Bezier(-45, bucketDeposit));
         headingControl.setIntegrationBounds(-10000000, 10000000);
@@ -101,7 +108,7 @@ public class Main extends LinearOpMode {
         
         while (opModeIsActive()) {
             // Drivetrain stuff
-            double driveTurn = Math.pow(-gamepad2.right_stick_x, 1);
+            double driveTurn = 0.75* Math.pow(-gamepad2.right_stick_x, 1);
             driveTurn = (Math.abs(driveTurn) > 0) ?
                     (driveTurn + Math.signum(driveTurn)* MotionPlannerEdit.kStatic_Turn) : 0;
             if (driveTurn == 0) {
@@ -135,10 +142,10 @@ public class Main extends LinearOpMode {
             if (!autoMovement)
                 Pika.drivetrain.drive(magnitude, theta, driveTurn, Pika.movementPower, Pika.getVoltage());
 
-            if (alignReader.wasJustReleased()) {
-                goToBucket.init();
-                autoMovement = true;
-            }
+//            if (alignReader.wasJustReleased()) {
+//                goToBucket.init();
+//                autoMovement = true;
+//            }
             if (modeButton.wasJustReleased()) {
                 bucketMode = !bucketMode;
             }
@@ -198,10 +205,11 @@ public class Main extends LinearOpMode {
                     Pika.outtakeSlides.stopSlides();
             }
 
-
-            if (xReader.wasJustReleased()) {
-                slidePositionMode = true;
-                Pika.outtakeSlides.retractToIntake();
+            if (hangButton.wasJustReleased()) {
+                if (Pika.arm.getTargetPosition() != Arm.ArmPos.PREP_HANG.getPosition()) {
+                    slidePositionMode = true;
+                    hang.init();
+                }
             }
 
 //            if (limelightAlignmentButton.wasJustReleased()) {
@@ -222,6 +230,9 @@ public class Main extends LinearOpMode {
                 intakeSample.stop();
                 prepareOuttake.stop();
                 grab.stop();
+                if (!bucketMode) {
+                    Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition());
+                }
                 retract.init();
                 highBasket.stop();
                 slidePositionMode = true;
@@ -229,25 +240,23 @@ public class Main extends LinearOpMode {
             }
 
 
-            if (gamepad1.dpad_up) {
+            if (dpadUp.wasJustReleased()) {
                 Pika.movementPower = 0.5;
                 slidePositionMode = true;
-                highBasket.init();
+                if (bucketMode)
+                    highBasket.init();
+                else {
+                    if (Pika.outtakeSlides.getTargetPosition() != OuttakeSlides.TurnValue.SPEC_PREP.getTicks()) {
+                        prepareOuttakeSpec.init();
+                    }
+                    else {
+                        depositSpec.init();
+                    }
+                }
                 intakeSample.stop();
                 prepareOuttake.stop();
                 grab.stop();
                 retract.stop();
-            }
-
-            if (gamepad1.dpad_down) {
-                slidePositionMode = true;
-                Pika.outtakeSlides.holdSlides();
-                hang.init();
-                intakeSample.stop();
-                prepareOuttake.stop();
-                grab.stop();
-                retract.stop();
-                highBasket.stop();
             }
 
 
@@ -260,7 +269,7 @@ public class Main extends LinearOpMode {
                 Pika.newClaw.setPivotOrientation(Pika.newClaw.orientation-(15*gamepad1.left_trigger));
             }
 
-            if (!Pika.arm.isFinished()) {
+            if (!Pika.arm.isFinished() && Pika.arm.getTargetPosition() != Arm.ArmPos.HANG.getPosition()) {
                 Pika.outtakeSlides.freeMove();
             }
             else {
@@ -273,27 +282,28 @@ public class Main extends LinearOpMode {
             Pika.localizer.update();
             alignReader.readValue();
             modeButton.readValue();
-            xReader.readValue();
+            hangButton.readValue();
             clawButton.readValue();
+            dpadUp.readValue();
             limelightAlignmentButton.readValue();
             retractButton.readValue();
-            telemetry.addData("DriveTrain current: ", Pika.drivetrain.totalCurrent());
+//            telemetry.addData("DriveTrain current: ", Pika.drivetrain.totalCurrent());
             telemetry.addData("SlideCurrent: ", Pika.outtakeSlides.totalCurrent());
-            telemetry.addData("ArmCurrent: ", Pika.arm.totalCurrent());
-            telemetry.addData("SlidePositionMode: ", slidePositionMode);
-            telemetry.addData("\nClawOpen: ", clawOpen);
+//            telemetry.addData("ArmCurrent: ", Pika.arm.totalCurrent());
+//            telemetry.addData("SlidePositionMode: ", slidePositionMode);
+//            telemetry.addData("\nClawOpen: ", clawOpen);
             telemetry.addData("\nX: ", Pika.localizer.getX());
             telemetry.addData("\nY: ", Pika.localizer.getY());
-            telemetry.addData("Tx: ", Pika.limelight.tX);
-            telemetry.addData("Ty: ", Pika.limelight.tY);
-            telemetry.addData("Tx: ", Pika.limelight.tX);
-            telemetry.addData("Ty: ", Pika.limelight.tY);
-            telemetry.addData("\nArm: \n", Pika.arm.getTelemetry());
-            telemetry.addData("\nClaw: \n", Pika.newClaw.getTelemetry());
+//            telemetry.addData("Tx: ", Pika.limelight.tX);
+//            telemetry.addData("Ty: ", Pika.limelight.tY);
+//            telemetry.addData("Tx: ", Pika.limelight.tX);
+//            telemetry.addData("Ty: ", Pika.limelight.tY);
+//            telemetry.addData("\nArm: \n", Pika.arm.getTelemetry());
+//            telemetry.addData("\nClaw: \n", Pika.newClaw.getTelemetry());
             telemetry.addData("\nSlides: \n", Pika.outtakeSlides.getTelemetry());
-            telemetry.addData("", Pika.localizer.getTelemetry());
-            telemetry.addData("Bruh: ", Pika.arm.getTargetPosition() == Arm.ArmPos.INTAKE.getPosition() &&
-                    Pika.outtakeSlides.getCurrentPosition() < OuttakeSlides.TurnValue.MAX_EXTENSION_DOWN.getTicks());
+//            telemetry.addData("", Pika.localizer.getTelemetry());
+//            telemetry.addData("Bruh: ", Pika.arm.getTargetPosition() == Arm.ArmPos.INTAKE.getPosition() &&
+//                    Pika.outtakeSlides.getCurrentPosition() < OuttakeSlides.TurnValue.MAX_EXTENSION_DOWN.getTicks());
             telemetry.addData("BucketMode: ", bucketMode);
             telemetry.update();
         }
@@ -306,8 +316,9 @@ public class Main extends LinearOpMode {
     private boolean readyToIntake() {
         return Pika.arm.getTargetPosition() == Arm.ArmPos.INTAKE.getPosition()
                 && Pika.arm.isFinished() &&
-                (Pika.newClaw.pitchPos == FinalClaw.ArmPitch.BEFORE_GRAB.getPosition() ||
-                        Pika.newClaw.pitchPos == FinalClaw.ArmPitch.GRAB.getPosition());
+                ((bucketMode && (Pika.newClaw.pitchPos == FinalClaw.ArmPitch.BEFORE_GRAB.getPosition() ||
+                        Pika.newClaw.pitchPos == FinalClaw.ArmPitch.GRAB.getPosition())) ||
+                (!bucketMode && (Pika.newClaw.pitchPos ==  FinalClaw.ArmPitch.SPEC_GRAB.getPosition())));
     }
     
     private void prepareOuttakeAndExtend() {
@@ -386,8 +397,10 @@ public class Main extends LinearOpMode {
         prepareOuttake.update();
         intakeSampleSpec.update();
         autoGrab.update();
+        hang.update();
 //        alignWithSample.update();
         retract.update();
+        depositSpec.update();
     }
 
 }

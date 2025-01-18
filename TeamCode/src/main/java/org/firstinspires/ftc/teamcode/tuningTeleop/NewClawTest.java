@@ -28,10 +28,10 @@ public class NewClawTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             if (gamepad1.dpad_up) {
-                pos += 0.0005;
+                pos += 0.005;
             }
             else if (gamepad1.dpad_down) {
-                pos -=0.0005;
+                pos -=0.005;
             }
 
             if (gamepad1.dpad_right) {
@@ -41,10 +41,10 @@ public class NewClawTest extends LinearOpMode {
                 armPos-=5;
             }
             if (gamepad1.a) {
-                miniPitchPos += 0.0005;
+                miniPitchPos += 0.005;
             }
             else if (gamepad1.y) {
-                miniPitchPos -= 0.0005;
+                miniPitchPos -= 0.005;
             }
 
 

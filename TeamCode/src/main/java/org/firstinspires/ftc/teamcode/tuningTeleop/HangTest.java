@@ -1,12 +1,16 @@
 package org.firstinspires.ftc.teamcode.tuningTeleop;
 
+import android.database.AbstractCursor;
+
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.gamepad.ToggleButtonReader;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.commandBase.ActualTeleOpHang;
 import org.firstinspires.ftc.teamcode.component.Arm;
+import org.firstinspires.ftc.teamcode.component.FinalClaw;
 import org.firstinspires.ftc.teamcode.component.OuttakeSlides;
 import org.firstinspires.ftc.teamcode.core.Pika;
 
@@ -17,44 +21,24 @@ public class HangTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         Pika.init(hardwareMap, this, false);
         GamepadEx driverOp = new GamepadEx(gamepad1);
-        ToggleButtonReader yReader = new ToggleButtonReader(
-                driverOp, GamepadKeys.Button.Y
+        ToggleButtonReader hangButton = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.X
         );
+        ActualTeleOpHang hang = new ActualTeleOpHang();
         waitForStart();
         while (opModeIsActive()) {
-            if (gamepad1.dpad_up) {
-                armPos = Arm.ArmPos.PREP_HANG.getPosition();
-            }
-            else if (gamepad1.dpad_down) {
-                slidePositionMode = true;
-                armPos = Arm.ArmPos.HANG.getPosition();
-                Pika.outtakeSlides.setTargetPosition(
-                        OuttakeSlides.TurnValue.HANG_RETRACT.getTicks()
-                );
+
+            if (hangButton.wasJustReleased()) {
+                if (Pika.arm.getTargetPosition() != Arm.ArmPos.PREP_HANG.getPosition()) {
+                    slidePositionMode = true;
+                    hang.init();
+                }
             }
 
-            if (yReader.wasJustReleased()) {
-                armPos = Arm.ArmPos.STUPID_TAIL.getPosition();
-            }
-
-            if (gamepad1.right_bumper) {
-                slidePositionMode = false;
-                Pika.outtakeSlides.setPower(0.4);
-                Pika.outtakeSlides.goUp();
-            }
-            else if (gamepad1.left_bumper) {
-                Pika.outtakeSlides.setPower(0.4);
-                slidePositionMode = false;
-                Pika.outtakeSlides.goDown();
-            }
-            else {
-                slidePositionMode = true;
-                Pika.outtakeSlides.holdSlides();
-            }
-            Pika.arm.setTargetPosition(armPos);
             if (slidePositionMode && Pika.arm.isFinished())
                 Pika.outtakeSlides.update();
-            yReader.readValue();
+            hangButton.readValue();
+            hang.update();
             Pika.arm.update();
             telemetry.addData("Arm: ", Pika.arm.getTelemetry());
             telemetry.addData("ArmPos: ", armPos);

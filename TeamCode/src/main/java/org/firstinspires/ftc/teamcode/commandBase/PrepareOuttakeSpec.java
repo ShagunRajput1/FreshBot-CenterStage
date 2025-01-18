@@ -19,7 +19,8 @@ public class PrepareOuttakeSpec extends SequentialCommand {
                 ),
 
                 new ArmMove(Arm.ArmPos.OUTTAKE.getPosition()),
-                new RunCommand(()->Pika.outtakeSlides.resetEncoder())
+                new RunCommand(()->Pika.outtakeSlides.resetEncoder()),
+                new SlidesMove(OuttakeSlides.TurnValue.SPEC_PREP.getTicks())
         );
     }
 }

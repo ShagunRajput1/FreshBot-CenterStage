@@ -18,7 +18,8 @@ public class PrepareSpecDeposit extends SequentialCommand {
                         new RunCommand(()-> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.SPEC_DEPOSIT.getPosition())),
                         new RunCommand(()-> Pika.newClaw.setPivotOrientation(180))
                 ),
-                new RunCommand(()-> Pika.outtakeSlides.resetEncoder())
+                new RunCommand(()-> Pika.outtakeSlides.resetEncoder()),
+                new SlidesMove(OuttakeSlides.TurnValue.SPEC_PREP.getTicks())
         );
     }
 }

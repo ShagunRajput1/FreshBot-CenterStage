@@ -52,7 +52,8 @@ public class OuttakeSlides {
         HANG(24000), //880
         MAX_EXTENSION_UP(42000),
         MAX_EXTENSION_DOWN(25000),
-        SPEC_DEPOSIT(9500);
+        SPEC_DEPOSIT(15000),
+        SPEC_PREP(6200);
 
         final int ticks;
 

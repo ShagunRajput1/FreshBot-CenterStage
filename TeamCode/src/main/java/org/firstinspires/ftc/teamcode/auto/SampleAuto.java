@@ -54,7 +54,7 @@ public class SampleAuto extends LinearOpMode {
     PreparePark park = new PreparePark();
 
 
-    public static Point submersible = new Point(50, -18.8);
+    public static Point submersible = new Point(50, -18.25);
     public static Point parkPoint = new Point(45, -23);
 
     @Override

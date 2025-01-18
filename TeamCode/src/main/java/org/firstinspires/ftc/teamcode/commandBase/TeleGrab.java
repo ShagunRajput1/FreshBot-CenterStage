@@ -11,6 +11,7 @@ public class TeleGrab extends SequentialCommand {
     public TeleGrab() {
         super(
                 new RunCommand(() -> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.GRAB.getPosition())),
+                new RunCommand(() -> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.GRAB.getPosition())),
                 new Wait(200),
                 new RunCommand(() -> Pika.newClaw.setClaw(FinalClaw.ClawPosition.CLOSE.getPosition())),
                 new Wait(200),

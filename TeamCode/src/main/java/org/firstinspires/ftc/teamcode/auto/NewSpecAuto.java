@@ -28,15 +28,16 @@ public class NewSpecAuto extends LinearOpMode {
     MotionPlannerEdit follower; //-17.7, 14.65
     MotionPlannerEdit lowPrecisionFollower;
     ElapsedTime timer;
-    Point spike1 = new Point(-24.8, 29.45); // 19600
-    Point spike2 = new Point(-24.8, 38.2); // 19600
+    Point spike1 = new Point(-23.8, 29.45); // 19600
+    Point spike2 = new Point(-23.8, 39.15); // 19600
     Point spike3 = new Point(-24.8, 45.75); // 164.8 19632
-    Point obsZone =  new Point(-17, 24);
-    Point chamber1 = new Point(-26.65, -1.5);
-    Point chamber2 = new Point(-29.25, -1);
-    Point chamber3 = new Point(-33.5, -2);
-    Point chamber4 = new Point(-32.5, -3.5);
-    Point chamber5 = new Point(-31.205, -4.5);
+    Point obsZone =  new Point(-17, 27);
+    Point parkPoint = new Point(-10, 34);
+    Point chamber1 = new Point(-28.65, -5);
+    Point chamber2 = new Point(-30.25, -3);
+    Point chamber3 = new Point(-33.5, 1);
+    Point chamber4 = new Point(-32.5, 1);
+    Point chamber5 = new Point(-31.205, 1);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -94,20 +95,38 @@ public class NewSpecAuto extends LinearOpMode {
                         obsZone
                 )
         );
-        Bezier obsToChamber = new MergedBezier(
-                0,
+        Bezier park = new MergedBezier(
+                40,
                 new Bezier(
-                        -320,
-                        new Point(-25, -1)
+                        0,
+                        new Point(-5, 0)
                 ),
                 new Bezier(
-                  0,
-                  chamber2
+                        180,
+                        new Point(-20, 15),
+                        new Point(-10, 30),
+                        parkPoint
                 )
-//                0,
-//                obsZone,
-//                new Point(2, 3),
-//                chamber2
+        );
+
+        Bezier obsToChamber = new Bezier(
+                  0,
+                        obsZone,
+                        new Point(-10, 7),
+                        chamber2
+        );
+
+        Bezier obsToChamber2 = new Bezier(
+                0,
+                obsZone,
+                new Point(-10, 7),
+                new Point(chamber2.getX(), 0)
+        );
+        Bezier obsToChamber3 = new Bezier(
+                0,
+                obsZone,
+                new Point(-10, 7),
+                new Point(chamber2.getX(), 2)
         );
 
         SequentialCommand preloadAndSpikes = new SequentialCommand(
@@ -181,48 +200,49 @@ public class NewSpecAuto extends LinearOpMode {
                 ),
 
 
-                new SlidesMove(17000),
                 new Wait(800),
+                new SlidesMove(17000),
                 new RunCommand(()->Pika.newClaw.setClaw(FinalClaw.ClawPosition.CLOSE.getPosition())),
                 new PrepareSpecDeposit(),
                 new ParallelCommand(
                         new FollowTrajectory(follower, obsToChamber)
                 ),
                 new SlidesMove(OuttakeSlides.TurnValue.SPEC_DEPOSIT.getTicks()),
+                new RunCommand(()-> Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition())),
                 new ParallelCommand(
                         new FollowTrajectory(follower, chamberToObs),
                         new IntakeSampleSpec()
                 ),
 
-                new SlidesMove(17000),
                 new Wait(800),
+                new SlidesMove(17000),
                 new RunCommand(()->Pika.newClaw.setClaw(FinalClaw.ClawPosition.CLOSE.getPosition())),
                 new PrepareSpecDeposit(),
                 new ParallelCommand(
-                        new FollowTrajectory(follower, obsToChamber)
+                        new FollowTrajectory(follower, obsToChamber2)
                 ),
                 new SlidesMove(OuttakeSlides.TurnValue.SPEC_DEPOSIT.getTicks()),
+                new RunCommand(()-> Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition())),
+
                 new ParallelCommand(
-                        new RunCommand(()-> Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition())),
                         new FollowTrajectory(follower, chamberToObs),
                         new IntakeSampleSpec()
                 ),
 
-                new SlidesMove(17000),
                 new Wait(800),
+                new SlidesMove(17000),
                 new RunCommand(()->Pika.newClaw.setClaw(FinalClaw.ClawPosition.CLOSE.getPosition())),
                 new PrepareSpecDeposit(),
                 new ParallelCommand(
-                        new FollowTrajectory(follower, obsToChamber)
+                        new FollowTrajectory(follower, obsToChamber3)
                 ),
                 new SlidesMove(OuttakeSlides.TurnValue.SPEC_DEPOSIT.getTicks()),
+                new RunCommand(()-> Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition())),
                 new ParallelCommand(
-                        new RunCommand(()-> Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition())),
-                        new FollowTrajectory(follower, chamberToObs),
+                        new FollowTrajectory(follower, park),
                         new IntakeSampleSpec()
                 )
 
-//                new SlidesMove(17000),
 //                new Wait(1000),
 //                new RunCommand(()->Pika.newClaw.setClaw(FinalClaw.ClawPosition.CLOSE.getPosition())),
 //                new ParallelCommand(
