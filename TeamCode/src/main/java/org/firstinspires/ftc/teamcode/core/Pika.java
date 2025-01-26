@@ -40,7 +40,8 @@ public class Pika {
         newClaw.init(hardwareMap);
         outtakeSlides = new OuttakeSlides();
         outtakeSlides.init(hardwareMap, teleOp);
-
+        if (teleOp)
+            newClaw.setMiniPitch(FinalClaw.MiniPitch.BEFORE_GRAB.getPosition());
 
     }
 

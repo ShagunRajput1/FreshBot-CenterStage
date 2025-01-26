@@ -243,4 +243,8 @@ public class Camlight {
         limelight.stop();
     }
 
+    public boolean isRunning() {
+        return limelight.isRunning();
+    }
+
 }

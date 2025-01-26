@@ -51,7 +51,7 @@ public class OuttakeSlides {
         BUCKET2_TELEOP(36500),
         HANG(24000), //880
         MAX_EXTENSION_UP(42000),
-        MAX_EXTENSION_DOWN(25000),
+        MAX_EXTENSION_DOWN(18500),
         SPEC_DEPOSIT(15000),
         SPEC_PREP(6200);
 
@@ -117,7 +117,8 @@ public class OuttakeSlides {
         if (!toUpdate)
             return;
         error = getTargetPosition() - currentPos;
-        if (targetPos == TurnValue.RETRACTED.getTicks() && currentPos < TurnValue.RETRACTED.getTicks()) {
+        if (targetPos == TurnValue.RETRACTED.getTicks() && currentPos < TurnValue.RETRACTED.getTicks() && slide1Power>0) {
+            // Prevents strain. Target is retracted. CurrentPos is below Target and Slide is being pulled back. Happens sometimes idk why
             slide1.setPower(0);
             slide2.setPower(0);
             return;
@@ -237,7 +238,8 @@ public class OuttakeSlides {
                 "\nError:" + error +
                 "\nSlide1 Pw:" + slide1.getPower() +
                 "\nSlide2 Pw: " + slide2.getPower() +
-                "\nSlides Finished: " + isFinished();
+                "\nSlides Finished: " + isFinished() +
+                "\ntoUpdate: " + toUpdate;
     }
 
     public double totalCurrent() {

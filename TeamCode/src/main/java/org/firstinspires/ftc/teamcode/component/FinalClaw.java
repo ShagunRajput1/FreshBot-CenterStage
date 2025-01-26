@@ -25,9 +25,9 @@ public class FinalClaw {
         }
     }
     public enum ArmPitch {
-        UP(0.684), RETRACT(0.1385), GRAB(0.7435), DEPOSIT(0.5675), APRIL(0.404),
+        UP(0.684), RETRACT(0.1485), GRAB(0.7435), DEPOSIT(0.5675), APRIL(0.404),
         BEFORE_GRAB(0.6635), SPEC_DEPOSIT(0.729), SPEC_GRAB(0.735), AFTER_GRAB(0.65),
-        SPEC_WALL(0.5795);
+        SPEC_WALL(0.5795), AUTO_GRAB(0.7485);
 
         private final double value;
 
@@ -42,7 +42,8 @@ public class FinalClaw {
 
     public enum MiniPitch {
         RETRACT(0.556), GRAB(0.776), DEPOSIT(0.376), SPEC_DEPOSIT(0.226),
-        SPEC_GRAB(0.686), DETECT(0.841), BEFORE_GRAB(0.806), SPEC_WALL(0.665);
+        SPEC_GRAB(0.686), DETECT(0.841), BEFORE_GRAB(0.806), SPEC_WALL(0.665),
+        AUTO_GRAB(0.766);
 
         private final double value;
 

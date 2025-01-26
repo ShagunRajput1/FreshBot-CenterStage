@@ -33,6 +33,8 @@ public class AutoIntakeTest extends LinearOpMode {
             telemetry.addData("Slides: ", Pika.outtakeSlides.getTelemetry());
             telemetry.addData("", Pika.limelight.getTelemetry());
             telemetry.addData("IntakeDone: ", autoIntake.isFinished());
+            telemetry.addData("Limelight: ", Pika.limelight.isRunning());
+            telemetry.addData("Claw: ", Pika.newClaw.getTelemetry());
             telemetry.update();
         }
     }

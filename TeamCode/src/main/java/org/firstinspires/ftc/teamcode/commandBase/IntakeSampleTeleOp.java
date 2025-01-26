@@ -15,7 +15,7 @@ public class IntakeSampleTeleOp extends SequentialCommand {
                 new RunCommand(()-> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.BEFORE_GRAB.getPosition())),
 
                 new ParallelCommand(
-                        new RunCommand(() -> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.GRAB.getPosition())),
+                        new RunCommand(() -> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.DETECT.getPosition())),
                         new RunCommand(()-> Pika.newClaw.setPivotOrientation(90))
                 ),
 

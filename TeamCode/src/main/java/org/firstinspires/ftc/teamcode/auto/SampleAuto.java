@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.commandBase.AlignWithSample;
 import org.firstinspires.ftc.teamcode.commandBase.AutoIntakeFromSub;
@@ -32,6 +33,7 @@ import org.firstinspires.ftc.teamcode.teleop.SohamsRobot;
 @Autonomous
 public class SampleAuto extends LinearOpMode {
     Bezier bucket, sample1, sample2, sample3, submersibleIntake, parkPath;
+    ElapsedTime timer = new ElapsedTime();
     MotionPlannerEdit follower;
     public static Point bucketDeposit = new Point(10.95, 10.8);
     public static Point subBucketDeposit = new Point(9.5, 12.65);
@@ -50,6 +52,7 @@ public class SampleAuto extends LinearOpMode {
 
 
     public static boolean subCycleDone = false;
+    private boolean emergencyParking = false;
 
     PreparePark park = new PreparePark();
 
@@ -69,11 +72,11 @@ public class SampleAuto extends LinearOpMode {
                 bucketDeposit);
         sample1 = new Bezier(0,
                 bucketDeposit,
-                new Point(13.89, 7.7209)
+                new Point(13.89, 7.28209)
         );
         sample2 = new Bezier(0,
                 bucketDeposit,
-                new Point(12.2966, 18)
+                new Point(12.2966, 17.85)
         );
         sample3 = new Bezier(14.6,
                 bucketDeposit,
@@ -269,9 +272,25 @@ public class SampleAuto extends LinearOpMode {
 
         );
 
+        SequentialCommand emergencyPark = new SequentialCommand(
+                new RunCommand(()-> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.DETECT.getPosition())),
+                new RunCommand(()-> Pika.newClaw.setPivotOrientation(180)),
+                new ParallelCommand(
+                        new SequentialCommand(
+                                new RunCommand(()-> Pika.outtakeSlides.resume()),
+                                new SlidesMove(OuttakeSlides.TurnValue.RETRACTED.getTicks())
+                        ),
+                        new RunCommand(()-> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.RETRACT.getPosition()))
+                ),
+                new Wait(200),
+                new PreparePark()
+        );
+
 
         waitForStart();
         zeroPlusFour.init();
+        timer.reset();
+
 
 
 
@@ -292,11 +311,23 @@ public class SampleAuto extends LinearOpMode {
                 subCycles.init();
             }
 
+            if (timer.seconds() >= 25 && subCycleDone && subCycles.getIndex() == 0 && !emergencyParking) {
+                subCycles.stop();
+                zeroPlusFour.stop();
+                emergencyPark.init();
+                emergencyParking = true;
+            }
+
+//            telemetry.addData("Timer: ", timer.seconds());
+//            telemetry.addData("Slides", Pika.outtakeSlides.getTelemetry());
+//            telemetry.addData("Arm: ", Pika.arm.getTelemetry());
+//            telemetry.addData("EmergencyPark", emergencyPark.getIndex());
+//            telemetry.addData("EPark: ", emergencyPark.isFinished());
+//            telemetry.update();
             subCycles.update();
+            emergencyPark.update();
             Pika.localizer.update();
         }
-        Pika.limelight.stop();
-
     }
 }
 
