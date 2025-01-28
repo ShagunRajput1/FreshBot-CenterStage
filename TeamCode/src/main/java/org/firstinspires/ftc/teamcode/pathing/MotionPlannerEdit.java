@@ -33,7 +33,7 @@ public class MotionPlannerEdit {
 //    public static PIDController translationalControlEnd = new PIDController(0.025,0.02,0.1);
     public static TweakedPID translationalControlEndX = new TweakedPID(0.02,0.0015, 0);
     public static TweakedPID translationalControlEndY = new TweakedPID(0.03, 0.0002, 0);  // i term modified but might revert
-    public static TweakedPID headingControlEnd = new TweakedPID(0.015, 0.00012, 0); // hope
+    public static TweakedPID headingControlEnd = new TweakedPID(0.01, 0.00012, 0); // hope
 
 
     private int index;
@@ -68,9 +68,9 @@ public class MotionPlannerEdit {
     double radius;
     public final static double THE_HOLY_CONSTANT = 0.0006; //0.001
 
-    public static double kStatic_X = 0.1; //.19
+    public static double kStatic_X = 0.13; //.19
     public static double kStatic_Y = 0.218; //.19
-    public static double kStatic_Turn = 0.089; //.19
+    public static double kStatic_Turn = 0.1; //.19
     double ac;
 
     double numLoops;
@@ -78,9 +78,8 @@ public class MotionPlannerEdit {
 
 
     private double movementPower = 0.765;
-    public static double kStatic = 0.32; //.19
-    private double translational_error = 0.35;
-    private double heading_error = 0.75;
+    private double translational_error = 0.8;
+    private double heading_error = 1;
     private final double endTrajThreshhold = 15;
     public static final double tIncrement = 0.05;
 
@@ -136,6 +135,7 @@ public class MotionPlannerEdit {
     public void startTrajectory(Path spline) {
         this.spline = spline;
         toUpdate = true;
+        end = false;
         reset();
     }
 
@@ -178,8 +178,10 @@ public class MotionPlannerEdit {
                 "\n Heading: " + currentHeading +
                 "\n X: " + localizer.getX() +
                 "\n Y: " + localizer.getY() +
-//                "\n X_error: " + x_error +
-//                "\n Y_error: " + y_error +
+                "\n TargetX: " + spline.getEndPoint().getX() +
+                "\n TargetY: " + spline.getEndPoint().getY() +
+                "\n X_error: " + x_error +
+                "\n Y_error: " + y_error +
 //                "\n Translational Error: " + permissible_translational_error +
                 "\n xPower: " + x_power +
                 "\n yPower: " + y_power +
@@ -249,21 +251,22 @@ public class MotionPlannerEdit {
                 y_power = translationalControlEndY.calculate(0, y_error);
                 x_power = x_power + Math.signum(x_power)* kStatic_X;
                 y_power = y_power + Math.signum(y_power)* kStatic_Y;
+
 //                x_rotated = x_power * Math.cos(Math.toRadians(currentHeading)) + y_power * Math.sin(Math.toRadians(currentHeading));
 //                y_rotated =  -x_power * Math.sin(Math.toRadians(currentHeading)) + y_power * Math.cos(Math.toRadians(currentHeading));
 //                theta = Math.toDegrees(Math.atan2(y_rotated, x_rotated));
                 // Calculate theta before adding KStatics because KStatics for x and y are not the same
 
-//                x_power = (!reachedXTarget()) ? (x_power + Math.signum(x_power) * kStatic_X): 0;
-//                y_power = (!reachedYTarget()) ? (y_power + Math.signum(y_power) * kStatic_Y): 0;
+                x_power = (!reachedXTarget()) ? (x_power): 0;
+                y_power = (!reachedYTarget()) ? (y_power): 0;
 //                x_rotated = x_power * Math.cos(Math.toRadians(currentHeading)) + y_power * Math.sin(Math.toRadians(currentHeading));
 //                y_rotated =  -x_power * Math.sin(Math.toRadians(currentHeading)) + y_power * Math.cos(Math.toRadians(currentHeading));
 
 
                 magnitude = Math.hypot(x_power, y_power);
-                driveTurn = (!reachedHeadingTarget()) ? headingControlEnd.calculate(0, getHeadingError()) : 0;
+                driveTurn = headingControlEnd.calculate(0, getHeadingError());
 
-                driveTurn = driveTurn + Math.signum(driveTurn) * kStatic_Turn;
+                driveTurn =  (!reachedHeadingTarget()) ? (driveTurn + Math.signum(driveTurn) * kStatic_Turn) : 0;
                 drive.drive(magnitude, theta, driveTurn, movementPower, voltage);
 
             } else {
@@ -388,11 +391,11 @@ public class MotionPlannerEdit {
     }
 
     private boolean reachedXTarget(){
-        return Math.abs(spline.getEndPoint().getX()-x)<= translational_error;
+        return Math.abs(x_error)<= translational_error && end;
     }
 
     private boolean reachedYTarget(){
-        return Math.abs(spline.getEndPoint().getY()-y)<= translational_error;
+        return Math.abs(y_error)<= translational_error && end;
     }
 
     private boolean reachedHeadingTarget(){

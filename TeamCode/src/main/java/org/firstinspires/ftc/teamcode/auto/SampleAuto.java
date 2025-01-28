@@ -35,8 +35,8 @@ public class SampleAuto extends LinearOpMode {
     Bezier bucket, sample1, sample2, sample3, submersibleIntake, parkPath;
     ElapsedTime timer = new ElapsedTime();
     MotionPlannerEdit follower;
-    public static Point bucketDeposit = new Point(10.95, 10.8);
-    public static Point subBucketDeposit = new Point(9.5, 12.65);
+    public static Point bucketDeposit = new Point(11, 10.4);
+    public static Point subBucketDeposit = new Point(9.75, 11.65);
     Bezier subToBucket = new MergedBezier(
             -45,
             new Bezier(
@@ -54,11 +54,9 @@ public class SampleAuto extends LinearOpMode {
     public static boolean subCycleDone = false;
     private boolean emergencyParking = false;
 
-    PreparePark park = new PreparePark();
-
 
     public static Point submersible = new Point(50, -18.25);
-    public static Point parkPoint = new Point(45, -23);
+    public static Point parkPoint = new Point(45, -22);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -72,15 +70,15 @@ public class SampleAuto extends LinearOpMode {
                 bucketDeposit);
         sample1 = new Bezier(0,
                 bucketDeposit,
-                new Point(13.89, 7.28209)
+                new Point(13.89, 7)
         );
         sample2 = new Bezier(0,
                 bucketDeposit,
-                new Point(12.2966, 17.85)
+                new Point(12.2966, 16)
         );
         sample3 = new Bezier(14.6,
                 bucketDeposit,
-                new Point(15.10, 22.8));
+                new Point(15.10, 21.6));
 
         submersibleIntake = new MergedBezier(
                 -90,
@@ -101,10 +99,10 @@ public class SampleAuto extends LinearOpMode {
                 -90,
                 new Bezier(
                         bucketDeposit,
-                        new Point(50, -2)
+                        new Point(50, 5)
                 ),
                 new Bezier(
-                        new Point(50, -2),
+                        new Point(50, 5),
                         parkPoint
                 )
 //                bucketDeposit,
@@ -283,7 +281,8 @@ public class SampleAuto extends LinearOpMode {
                         new RunCommand(()-> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.RETRACT.getPosition()))
                 ),
                 new Wait(200),
-                new PreparePark()
+                new PreparePark(),
+                new FollowTrajectory(follower, parkPath)
         );
 
 
@@ -323,7 +322,8 @@ public class SampleAuto extends LinearOpMode {
 //            telemetry.addData("Arm: ", Pika.arm.getTelemetry());
 //            telemetry.addData("EmergencyPark", emergencyPark.getIndex());
 //            telemetry.addData("EPark: ", emergencyPark.isFinished());
-//            telemetry.update();
+            telemetry.addData("", follower.getTelemetry());
+            telemetry.update();
             subCycles.update();
             emergencyPark.update();
             Pika.localizer.update();

@@ -300,6 +300,8 @@ public class Main extends LinearOpMode {
 //            telemetry.addData("Bruh: ", Pika.arm.getTargetPosition() == Arm.ArmPos.INTAKE.getPosition() &&
 //                    Pika.outtakeSlides.getCurrentPosition() < OuttakeSlides.TurnValue.MAX_EXTENSION_DOWN.getTicks());
             telemetry.addData("BucketMode: ", bucketMode);
+            telemetry.addData("auto orient: ", autoOrient);
+
             telemetry.update();
         }
         // 14480
@@ -313,7 +315,7 @@ public class Main extends LinearOpMode {
                 && Pika.arm.isFinished() &&
                 ((bucketMode && (Pika.newClaw.pitchPos == FinalClaw.ArmPitch.BEFORE_GRAB.getPosition() ||
                         Pika.newClaw.pitchPos == FinalClaw.ArmPitch.GRAB.getPosition()) &&
-                        Pika.newClaw.orientation == 90) ||
+                        (Pika.newClaw.orientation == 90 || !autoOrient)) ||
                 (!bucketMode && (Pika.newClaw.pitchPos ==  FinalClaw.ArmPitch.SPEC_GRAB.getPosition())));
     }
     

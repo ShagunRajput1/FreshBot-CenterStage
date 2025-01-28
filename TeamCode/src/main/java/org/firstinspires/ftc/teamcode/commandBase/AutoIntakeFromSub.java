@@ -23,12 +23,12 @@ public class AutoIntakeFromSub extends SequentialCommand {
                         new RunCommand(()-> Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition()))
                 ),
                 new RunCommand(() ->Pika.outtakeSlides.resetEncoder()),
-                new SlidesMove(4000),
+                new SlidesMove(4750),
                 new AlignWithSample(follower),
                 new Wait(500),
                 new SpecialGrab(),
-                new RunCommand(()->Pika.newClaw.setPivotOrientation(180)),
                 new RunCommand(()->Pika.outtakeSlides.resume()),
+                new RetractAll(),
                 new RunCommand(follower::resume)
         );
     }

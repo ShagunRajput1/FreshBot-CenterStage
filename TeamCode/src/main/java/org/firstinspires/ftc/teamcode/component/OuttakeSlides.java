@@ -119,6 +119,8 @@ public class OuttakeSlides {
         error = getTargetPosition() - currentPos;
         if (targetPos == TurnValue.RETRACTED.getTicks() && currentPos < TurnValue.RETRACTED.getTicks() && slide1Power>0) {
             // Prevents strain. Target is retracted. CurrentPos is below Target and Slide is being pulled back. Happens sometimes idk why
+            slide1Power = 0;
+            slide2Power = 0;
             slide1.setPower(0);
             slide2.setPower(0);
             return;
@@ -236,8 +238,8 @@ public class OuttakeSlides {
         return  "TargetPos: " + getTargetPosition() +
                 "\nCurrentPos: " + getCurrentPosition() +
                 "\nError:" + error +
-                "\nSlide1 Pw:" + slide1.getPower() +
-                "\nSlide2 Pw: " + slide2.getPower() +
+                "\nSlide1 Pw:" + slide1Power +
+                "\nSlide2 Pw: " + slide2Power +
                 "\nSlides Finished: " + isFinished() +
                 "\ntoUpdate: " + toUpdate;
     }
