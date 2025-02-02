@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.commandBase.ActualTeleOpHang;
 import org.firstinspires.ftc.teamcode.commandBase.AutoGrab;
+import org.firstinspires.ftc.teamcode.commandBase.AutoIntakeFromSubBasic;
 import org.firstinspires.ftc.teamcode.commandBase.Drop;
 import org.firstinspires.ftc.teamcode.commandBase.GrabSpec;
 import org.firstinspires.ftc.teamcode.commandBase.IntakeSampleSpec;
@@ -56,7 +57,7 @@ public class Main extends LinearOpMode {
     IntakeSampleTeleOp intakeSample = new IntakeSampleTeleOp();
     IntakeSampleSpec intakeSampleSpec = new IntakeSampleSpec();
     RetractAll retract = new RetractAll();
-    AutoGrab autoGrab = new AutoGrab();
+    AutoIntakeFromSubBasic autoGrab = new AutoIntakeFromSubBasic();
     TeleGrab grab = new TeleGrab();
     GrabSpec grabSpec = new GrabSpec();
     Drop drop = new Drop();
@@ -167,8 +168,9 @@ public class Main extends LinearOpMode {
                 Pika.movementPower = 0.5;
                 if (!readyToIntake()) {
                     slidePositionMode = true;
-                    if (bucketMode)
+                    if (bucketMode) {
                         intakeSample.init();
+                    }
                     else
                         intakeSampleSpec.init();
                     retract.stop();
@@ -250,7 +252,7 @@ public class Main extends LinearOpMode {
             }
 
             if (autoOrientButton.wasJustReleased()) {
-                autoOrient = true;
+                autoOrient = !autoOrient;
             }
 
 

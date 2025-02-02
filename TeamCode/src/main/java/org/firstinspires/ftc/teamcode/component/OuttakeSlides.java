@@ -34,7 +34,7 @@ public class OuttakeSlides {
     public static int retractAmount = 7600;
     public static int extendAmountIntake = 3050;
     private final PIDController slideController = new PIDController(P, I,D); //0.006
-    private final PIDController sampleSlideController = new PIDController(0.008, 0.0012, 0);
+    private final PIDController sampleSlideController = new PIDController(0.008, 0.002, 0);
     private final double searchForSamplePower = 0.325;
     public static double feedForward = 0.1;
     private final int holdChangeConstant = 5000;
@@ -145,6 +145,8 @@ public class OuttakeSlides {
                 slide1.getCurrentPosition()<TurnValue.MAX_EXTENSION_UP.ticks) ||
                 (Pika.arm.getTargetPosition() == Arm.ArmPos.INTAKE.getPosition() &&
                 slide1.getCurrentPosition() < TurnValue.MAX_EXTENSION_DOWN.ticks)) {
+            slide1Power = -power;
+            slide2Power = power;
             slide1.setPower(-power);
             slide2.setPower(power);
             holdPos = Math.min(slide1.getCurrentPosition()+ holdChangeConstant,
@@ -164,6 +166,8 @@ public class OuttakeSlides {
         slide1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         slide2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         if (slide1.getCurrentPosition() > TurnValue.RETRACTED.ticks) {
+            slide1Power = power;
+            slide2Power = -power;
             slide1.setPower(power);
             slide2.setPower(-power);
             holdPos = Math.max(slide1.getCurrentPosition() - holdChangeConstant, TurnValue.RETRACTED.getTicks());
@@ -222,6 +226,12 @@ public class OuttakeSlides {
         slide2.setPower(pw);
         targetPos = slide1.getCurrentPosition();
     }
+
+    public void resetAlignController() {
+        sampleSlideController.reset();
+        pw = 0;
+    }
+
     public void sampleSetPID(double P, double I, double D) {
         sampleSlideController.setPID(P, I, D);
     }
@@ -253,6 +263,7 @@ public class OuttakeSlides {
     }
 
     public void pause() {
+
         toUpdate = false;
     }
 }

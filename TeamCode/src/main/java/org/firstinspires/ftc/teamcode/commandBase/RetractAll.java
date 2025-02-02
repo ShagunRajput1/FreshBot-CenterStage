@@ -16,6 +16,7 @@ public class RetractAll extends SequentialCommand {
                 new Wait(30),
 
                 new ParallelCommand(
+                        new RunCommand(()-> Pika.outtakeSlides.resume()),
                         new RunCommand(()->Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.UP.getPosition())),
                         new RunCommand(()->Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.RETRACT.getPosition()))
                 ),

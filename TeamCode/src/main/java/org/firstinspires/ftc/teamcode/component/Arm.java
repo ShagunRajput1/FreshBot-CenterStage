@@ -20,6 +20,7 @@ public class Arm {
     public double I = 0.0002;
     public double D = 0.0001;
     private final int ERROR = 50;
+    private double movementPower = 1;
     TweakedPID armController = new TweakedPID(P, I, D);
 
 
@@ -67,7 +68,9 @@ public class Arm {
         currentPosition = getPosition();
         double error = targetPosition-currentPosition;
         power = Range.clip(armController.calculate(0, error), -1, 1);
-
+        if (Math.abs(power)>movementPower) {
+            power = Math.signum(power)*movementPower;
+        }
         armMotor.setPower(power);
     }
 
@@ -91,5 +94,9 @@ public class Arm {
 
     public double totalCurrent() {
         return armMotor.getCurrent(CurrentUnit.AMPS);
+    }
+
+    public void setMaxMovementPower(double pw) {
+        movementPower = pw;
     }
 }

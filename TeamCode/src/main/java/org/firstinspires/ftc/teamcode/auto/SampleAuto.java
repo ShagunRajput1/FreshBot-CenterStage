@@ -141,7 +141,10 @@ public class SampleAuto extends LinearOpMode {
                 ),
                 new ParallelCommand(
                         new IntakeSampleTeleOp(),
-                        new FollowTrajectory(follower, sample1)
+                        new SequentialCommand(
+                                new FollowTrajectory(follower, sample1),
+                                new Wait(80)
+                        )
                 ),
                 new ParallelCommand(
                         new SlidesMove(21500),
@@ -173,7 +176,10 @@ public class SampleAuto extends LinearOpMode {
 
                 new ParallelCommand(
                         new IntakeSampleTeleOp(),
-                        new FollowTrajectory(follower, sample2)
+                        new SequentialCommand(
+                                new FollowTrajectory(follower, sample2),
+                                new Wait(80)
+                        )
                 ),
                 new ParallelCommand(
                         new SlidesMove(24500),
@@ -203,7 +209,10 @@ public class SampleAuto extends LinearOpMode {
                 new RunCommand(()->follower.resume()),
                 new ParallelCommand(
                         new IntakeSampleTeleOp(),
-                        new FollowTrajectory(follower, sample3)
+                        new SequentialCommand(
+                                new FollowTrajectory(follower, sample3),
+                                new Wait(80)
+                        )
                 ),
                 new ParallelCommand(
                         new SlidesMove(19000),
