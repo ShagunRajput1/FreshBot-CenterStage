@@ -28,13 +28,13 @@ public class OuttakeSlides {
 
     public int holdPos;
     private double stallCurrent = 5.9;
-    public double P = 0.0003;
-    public double I = 0.0001;
+    public double P = 0.000375;
+    public double I = 0.00025;
     public double D = 0;
     public static int retractAmount = 7600;
     public static int extendAmountIntake = 3050;
     private final PIDController slideController = new PIDController(P, I,D); //0.006
-    private final PIDController sampleSlideController = new PIDController(0.008, 0.002, 0);
+    private final PIDController sampleSlideController = new PIDController(0.008, 0.00325, 0);
     private final double searchForSamplePower = 0.325;
     public static double feedForward = 0.1;
     private final int holdChangeConstant = 5000;
@@ -43,17 +43,19 @@ public class OuttakeSlides {
     public int targetPos;
     public boolean toUpdate;
 
+    private boolean reachedLimit;
+
 
     public enum TurnValue {
-        RETRACTED(500),
+        RETRACTED(0),
         HANG_RETRACT(6000),
         BUCKET2(40500),
         BUCKET2_TELEOP(36500),
         HANG(24000), //880
         MAX_EXTENSION_UP(42000),
         MAX_EXTENSION_DOWN(18500),
-        SPEC_DEPOSIT(15000),
-        SPEC_PREP(6200);
+        SPEC_DEPOSIT(14000), // 15000
+        SPEC_PREP(5000);
 
         final int ticks;
 
@@ -66,7 +68,10 @@ public class OuttakeSlides {
         }
     }
 
+    public double maxPower;
+
     public void init(HardwareMap hwMap, boolean telOp) {
+        reachedLimit = false;
         slide1 = hwMap.get(DcMotorEx.class, "slide1");
         slide2 = hwMap.get(DcMotorEx.class, "slide2");
         slide1.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
@@ -79,6 +84,7 @@ public class OuttakeSlides {
         }
         toUpdate = true;
         targetPos = 0;
+        maxPower = 1;
 
         stallCurrent = hwMap.voltageSensor.iterator().next().getVoltage()/2.2;
     }
@@ -123,10 +129,11 @@ public class OuttakeSlides {
             slide2Power = 0;
             slide1.setPower(0);
             slide2.setPower(0);
+            reachedLimit = false;
             return;
         }
 
-        pw = Range.clip(slideController.calculate(0, error), -1, 1);
+        pw = Range.clip(slideController.calculate(0, error), -maxPower, maxPower);
         slide1Power = -pw;
         slide2Power = pw;
         if (Math.abs(error) < ERROR && Pika.arm.getTargetPosition() == Arm.ArmPos.INTAKE.getPosition())
@@ -151,10 +158,12 @@ public class OuttakeSlides {
             slide2.setPower(power);
             holdPos = Math.min(slide1.getCurrentPosition()+ holdChangeConstant,
                     TurnValue.MAX_EXTENSION_UP.getTicks());
+            reachedLimit = false;
         }
         else {
             // Don't wanna un-power slides when extended up
             if (Pika.arm.getTargetPosition() == Arm.ArmPos.INTAKE.getPosition()) {
+                reachedLimit = true;
                 slide1.setPower(0);
                 slide2.setPower(0);
             }
@@ -163,6 +172,7 @@ public class OuttakeSlides {
     }
 
     public void goDown() {
+        reachedLimit = false;
         slide1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         slide2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         if (slide1.getCurrentPosition() > TurnValue.RETRACTED.ticks) {
@@ -230,6 +240,7 @@ public class OuttakeSlides {
     public void resetAlignController() {
         sampleSlideController.reset();
         pw = 0;
+        Pika.outtakeSlides.freeMove();
     }
 
     public void sampleSetPID(double P, double I, double D) {
@@ -265,5 +276,20 @@ public class OuttakeSlides {
     public void pause() {
 
         toUpdate = false;
+    }
+
+    public boolean isStuck() {
+        if (!isFinished() && Math.abs(slide1Power)>0.9 && slide1.getVelocity() < 100) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean reachedHorizontalLimit() {
+        return reachedLimit;
+    }
+
+    public void setMaxPower(double pw) {
+        maxPower = pw;
     }
 }

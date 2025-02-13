@@ -35,8 +35,8 @@ public class SampleAuto extends LinearOpMode {
     Bezier bucket, sample1, sample2, sample3, submersibleIntake, parkPath;
     ElapsedTime timer = new ElapsedTime();
     MotionPlannerEdit follower;
-    public static Point bucketDeposit = new Point(10.5, 10.8);
-    public static Point subBucketDeposit = new Point(9.75, 11.65);
+    public static Point bucketDeposit = new Point(10.3, 11.1);
+    public static Point subBucketDeposit = new Point(9.45, 12); //9.75, 11.65
     Bezier subToBucket = new MergedBezier(
             -45,
             new Bezier(
@@ -320,7 +320,7 @@ public class SampleAuto extends LinearOpMode {
                 subCycles.init();
             }
 
-            if (timer.seconds() >= 25 && subCycleDone && subCycles.getIndex() == 0 && !emergencyParking) {
+            if (timer.seconds() >= 250 && subCycleDone && subCycles.getIndex() == 0 && !emergencyParking) {
                 subCycles.stop();
                 zeroPlusFour.stop();
                 emergencyPark.init();
@@ -332,7 +332,7 @@ public class SampleAuto extends LinearOpMode {
 //            telemetry.addData("Arm: ", Pika.arm.getTelemetry());
 //            telemetry.addData("EmergencyPark", emergencyPark.getIndex());
 //            telemetry.addData("EPark: ", emergencyPark.isFinished());
-            telemetry.addData("", follower.getTelemetry());
+//            telemetry.addData("", follower.getTelemetry());
             telemetry.update();
             subCycles.update();
             emergencyPark.update();

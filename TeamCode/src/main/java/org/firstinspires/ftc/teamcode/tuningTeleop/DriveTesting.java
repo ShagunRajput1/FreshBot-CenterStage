@@ -6,15 +6,15 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.component.localizer.Localizer;
 import org.firstinspires.ftc.teamcode.core.Pika;
+import org.firstinspires.ftc.teamcode.drivetrain.MecanumDrive;
 import org.firstinspires.ftc.teamcode.pathing.MotionPlannerEdit;
 
 @TeleOp(name="Testing")
 public class DriveTesting extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        Pika.init(hardwareMap, this, false);
+        MecanumDrive drive = new MecanumDrive(hardwareMap);
         ElapsedTime timer = new ElapsedTime();
-        Pika.movementPower = 0.55;
 //        Localizer localizer = new Localizer(this, hardwareMap);
         waitForStart();
         while (opModeIsActive()) {
@@ -33,20 +33,19 @@ public class DriveTesting extends LinearOpMode {
             double magnitude = Math.hypot(driveX, driveY);
             double theta = Math.toDegrees(Math.atan2(driveY, driveX));
             double movementPower = Pika.movementPower;
-            Pika.drivetrain.drive(magnitude, theta, driveTurn, movementPower);
-            Pika.localizer.update();
+            drive.drive(magnitude, theta, driveTurn, 0.7);
 
-            telemetry.addData("X: ", Pika.localizer.getX());
-            telemetry.addData("Y: ", Pika.localizer.getY());
-            telemetry.addData("Heading: ", Pika.localizer.getHeading(Localizer.Angle.DEGREES));
-            telemetry.addData("RawX: ", Pika.localizer.getRawX());
-            telemetry.addData("RawY: ", Pika.localizer.getRawY());
-            telemetry.addData("RightEnc: ", Pika.localizer.getRightEncoderPosition());
-            telemetry.addData("LeftEnc: ", Pika.localizer.getLeftEncoderPosition());
-            telemetry.addData("PerpEnc: ", Pika.localizer.getFwdEncoderPosition());
-            telemetry.addData("DriveTurn: ", driveTurn);
-            telemetry.addData("Timer: ", timer.milliseconds());
-            telemetry.addData("", Pika.drivetrain.getTelemetry());
+//            telemetry.addData("X: ", Pika.localizer.getX());
+//            telemetry.addData("Y: ", Pika.localizer.getY());
+//            telemetry.addData("Heading: ", Pika.localizer.getHeading(Localizer.Angle.DEGREES));
+//            telemetry.addData("RawX: ", Pika.localizer.getRawX());
+//            telemetry.addData("RawY: ", Pika.localizer.getRawY());
+//            telemetry.addData("RightEnc: ", Pika.localizer.getRightEncoderPosition());
+//            telemetry.addData("LeftEnc: ", Pika.localizer.getLeftEncoderPosition());
+//            telemetry.addData("PerpEnc: ", Pika.localizer.getFwdEncoderPosition());
+//            telemetry.addData("DriveTurn: ", driveTurn);
+//            telemetry.addData("Timer: ", timer.milliseconds());
+//            telemetry.addData("", Pika.drivetrain.getTelemetry());
             telemetry.update();
             timer.reset();
 

@@ -17,14 +17,14 @@ public class DepositSample extends SequentialCommand {
 //            new RunCommand(()->Pika.outtakeSlides.resetEncoder()),
 //            new SlidesMove(slidePos),
             new ParallelCommand(
-                    new RunCommand(()->Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.DEPOSIT.getPosition())),
-                    new RunCommand(()-> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.DEPOSIT.getPosition())),
+                    new RunCommand(()->Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.AUTO_DEPOSIT.getPosition())),
+                    new RunCommand(()-> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.AUTO_DEPOSIT.getPosition())),
                     new RunCommand(()-> Pika.newClaw.setPivotOrientation(180))
 
             ),
             new Wait(200),
             new RunCommand(()->Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition())),
-            new Wait(150)
+            new Wait(250)
         );
     }
 }

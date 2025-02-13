@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.core;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.component.Arm;
@@ -26,7 +27,7 @@ public class Pika {
     public static Camlight limelight;
     public static Localizer localizer;
 
-    public static void init(HardwareMap hwMap, LinearOpMode opMode, boolean teleOp) {
+    public static void init(HardwareMap hwMap, OpMode opMode, boolean teleOp) {
 
         movementPower = 0.8;
         hardwareMap = hwMap;

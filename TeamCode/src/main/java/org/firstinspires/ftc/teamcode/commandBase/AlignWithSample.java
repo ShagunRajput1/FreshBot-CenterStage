@@ -5,9 +5,12 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.norm
 import com.arcrobotics.ftclib.controller.PIDController;
 
 import org.firstinspires.ftc.teamcode.commandSystem.Command;
+import org.firstinspires.ftc.teamcode.component.OuttakeSlides;
 import org.firstinspires.ftc.teamcode.component.localizer.Localizer;
 import org.firstinspires.ftc.teamcode.core.Pika;
+import org.firstinspires.ftc.teamcode.pathing.Bezier;
 import org.firstinspires.ftc.teamcode.pathing.MotionPlannerEdit;
+import org.firstinspires.ftc.teamcode.pathing.Point;
 
 public class AlignWithSample extends Command {
     double targetHeading, targetX;
@@ -20,7 +23,7 @@ public class AlignWithSample extends Command {
 
     double kStaticY = 0.2;
     boolean isFinished = false;
-    PIDController yControl = new PIDController(0.0125, 0.005, 0.0001);
+    PIDController yControl = new PIDController(0.0125, 0.0068, 0.000);
     PIDController xControl = new PIDController(0.02, 0.0015, 0.0065);
     PIDController headingControl = new PIDController(0.018, 0.0001, 0);
     double error;
@@ -38,6 +41,7 @@ public class AlignWithSample extends Command {
         this.targetX = Pika.localizer.getY();
         this.targetHeading = Pika.localizer.getHeading(Localizer.Angle.DEGREES);
         Pika.outtakeSlides.pause();
+        Pika.outtakeSlides.resetAlignController();
         follower.pause();
         xError = 0;
     }
@@ -48,6 +52,7 @@ public class AlignWithSample extends Command {
             Pika.drivetrain.drive(0,0,0,0);
             return;
         }
+
 
         Pika.limelight.getSampleOrientation();
         tX = Pika.limelight.tX;

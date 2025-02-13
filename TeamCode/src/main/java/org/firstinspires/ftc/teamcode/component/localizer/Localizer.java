@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.component.localizer;
 
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -77,7 +78,7 @@ public class Localizer {
         reset();
     }
 
-    public Localizer(LinearOpMode opMode, HardwareMap hardwareMap){
+    public Localizer(OpMode opMode, HardwareMap hardwareMap){
 
 //        imu = new Imu(hardwareMap);
 //        imu.initImuThread(opMode);

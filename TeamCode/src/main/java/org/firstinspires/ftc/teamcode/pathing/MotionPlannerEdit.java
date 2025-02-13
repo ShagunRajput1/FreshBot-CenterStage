@@ -31,7 +31,7 @@ public class MotionPlannerEdit {
 
     //    private PIDController translationalControlEnd = new PIDController(0.022,0.001,0.03);
 //    public static PIDController translationalControlEnd = new PIDController(0.025,0.02,0.1);
-    public static TweakedPID translationalControlEndX = new TweakedPID(0.02,0.0015, 0);
+    public static TweakedPID translationalControlEndX = new TweakedPID(0.011,0.002, 0); // 0.02 p 0.0015 i
     public static TweakedPID translationalControlEndY = new TweakedPID(0.03, 0.0002, 0);  // i term modified but might revert
     public static TweakedPID headingControlEnd = new TweakedPID(0.01, 0.00012, 0); // hope
 
@@ -68,7 +68,7 @@ public class MotionPlannerEdit {
     double radius;
     public final static double THE_HOLY_CONSTANT = 0.0006; //0.001
 
-    public static double kStatic_X = 0.13; //.19
+    public static double kStatic_X = 0.14; //.19
     public static double kStatic_Y = 0.218; //.19
     public static double kStatic_Turn = 0.1; //.19
     double ac;
@@ -80,7 +80,7 @@ public class MotionPlannerEdit {
     private double movementPower = 0.765;
     private double translational_error = 0.8;
     private double heading_error = 1;
-    private final double endTrajThreshhold = 15;
+    private final double endTrajThreshhold = 14;
     public static final double tIncrement = 0.05;
 
 
@@ -214,7 +214,7 @@ public class MotionPlannerEdit {
         if (!toUpdate)
             return;
 
-        localizer.update();
+//        localizer.update();
         updateACValues();
 
         x = localizer.getX();
@@ -441,5 +441,9 @@ public class MotionPlannerEdit {
 
     public void setMovementPower(double power) {
         this.movementPower = power;
+    }
+
+    public boolean isEnd() {
+        return end;
     }
 }

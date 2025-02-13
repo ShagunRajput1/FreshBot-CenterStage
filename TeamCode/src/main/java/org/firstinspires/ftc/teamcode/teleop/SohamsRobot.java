@@ -67,16 +67,16 @@ public class SohamsRobot extends LinearOpMode {
             else {
                 armPosMode = true;
             }
-
-            if (gamepad1.right_bumper) {
-                extendo.setPower(extendoPower);
-            }
-            else if (gamepad1.left_bumper) {
-                extendo.setPower(-extendoPower);
-            }
-            else {
-                extendo.setPower(0);
-            }
+//
+//            if (gamepad1.right_bumper) {
+//                extendo.setPower(extendoPower);
+//            }
+//            else if (gamepad1.left_bumper) {
+//                extendo.setPower(-extendoPower);
+//            }
+//            else {
+//                extendo.setPower(0);
+//            }
             if (!armPosMode) {
                 armHoldPos = armMotor.getCurrentPosition();
             }

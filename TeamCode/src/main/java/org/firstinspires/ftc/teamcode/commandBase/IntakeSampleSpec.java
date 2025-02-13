@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.core.Pika;
 public class IntakeSampleSpec extends SequentialCommand {
     public IntakeSampleSpec() {
         super (
+                new RunCommand(()->Pika.outtakeSlides.setMaxPower(1)),
                 new SlidesMove(OuttakeSlides.TurnValue.RETRACTED.getTicks()),
 
 //            new RunCommand(() -> Pika.claw.setArmPitch(Claw.ArmPitch.DOWN.getPosition())),

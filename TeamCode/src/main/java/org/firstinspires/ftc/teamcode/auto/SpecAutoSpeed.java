@@ -28,14 +28,15 @@ import org.firstinspires.ftc.teamcode.pathing.Point;
 public class SpecAutoSpeed extends LinearOpMode {
     MotionPlannerEdit follower; //-17.7, 14.65
     MotionPlannerEdit lowPrecisionFollower;
+    double movementPower = 0.9;
     ElapsedTime timer;
-    Point spike1 = new Point(-23.8, 29.45); // 19600
-    Point spike2 = new Point(-22.9, 39.15); // 19600
-    Point spike3 = new Point(-22.6, 49.5); // 164.8 19632
-    Point obsZone =  new Point(-18.5, 25.5);
+    Point spike1 = new Point(-24.05, 29.45); // 19600
+    Point spike2 = new Point(-22.7, 39.3); // 19600
+    Point spike3 = new Point(-22.1, 49.5); // 164.8 19632
+    Point obsZone =  new Point(-19.2, 26.6); // -18.5, 26
     Point parkPoint = new Point(-10, 34);
-    Point chamber1 = new Point(-30.2, -9);
-    Point chamber2 = new Point(-34, -5);
+    Point chamber1 = new Point(-30.2, -10);
+    Point chamber2 = new Point(-34.5, -4.5);
     Point chamber3 = new Point(-33.5, 1);
     Point chamber4 = new Point(-32.5, 1);
     Point chamber5 = new Point(-31.205, 1);
@@ -48,7 +49,7 @@ public class SpecAutoSpeed extends LinearOpMode {
         lowPrecisionFollower = new MotionPlannerEdit(Pika.drivetrain, Pika.localizer, hardwareMap);
         lowPrecisionFollower.setPermissibleTranslationalError(4);
         lowPrecisionFollower.setPermissibleHeadingError(5);
-        lowPrecisionFollower.setMovementPower(0.97);
+        lowPrecisionFollower.setMovementPower(0.98);
         Bezier preloadPath = new Bezier(
                 0,
                 new Point(0,0),
@@ -83,16 +84,29 @@ public class SpecAutoSpeed extends LinearOpMode {
         );
 
 
+//        Bezier chamberToObs = new MergedBezier(
+//                40,
+//                new Bezier(
+//                        0,
+//                        new Point(-5, 0)
+//                ),
+//                new Bezier(
+//                        180,
+//                        new Point(-20, 15),
+//                        new Point(-10, 25),
+//                        obsZone
+//                )
+//        );
+
         Bezier chamberToObs = new MergedBezier(
                 40,
                 new Bezier(
-                        0,
-                        new Point(-5, 0)
+                        40,
+                        new Point(-8, 0)
                 ),
                 new Bezier(
-                        180,
-                        new Point(-20, 15),
-                        new Point(-10, 30),
+                        40,
+                        new Point(-8, 0),
                         obsZone
                 )
         );
@@ -111,10 +125,10 @@ public class SpecAutoSpeed extends LinearOpMode {
         );
 
         Bezier obsToChamber = new Bezier(
-                0,
+                -2,
                 obsZone,
-                new Point(-14, 5),
-                chamber2
+                new Point(-17, 5),
+                new Point(chamber2.getX()-1.5, chamber2.getY())
         );
 //        Bezier obsToChamber = new MergedBezier(
 //                0,
@@ -143,10 +157,10 @@ public class SpecAutoSpeed extends LinearOpMode {
 
 
         Bezier obsToChamber2 = new Bezier(
-                0,
+                -4,
                 obsZone,
-                new Point(-14, 5),
-                new Point(chamber2.getX()-1.5, -2)
+                new Point(-17, 5),
+                new Point(chamber2.getX()-2.2, -2.25)
         );
 
 //        Bezier obsToChamber3 = new MergedBezier(
@@ -162,10 +176,10 @@ public class SpecAutoSpeed extends LinearOpMode {
 //        );
 
         Bezier obsToChamber3 = new Bezier(
-                0,
+                -6,
                 obsZone,
-                new Point(-14, 5),
-                new Point(chamber2.getX()-1.3, 1)
+                new Point(-17, 5),
+                new Point(chamber2.getX()-3, 1.8)
         );
 
 //        Bezier obsToChamber4 = new MergedBezier(
@@ -183,8 +197,8 @@ public class SpecAutoSpeed extends LinearOpMode {
         Bezier obsToChamber4 = new Bezier(
                 -7,
                 obsZone,
-                new Point(-14, 5),
-                new Point(chamber2.getX()-1.4, 4.2)
+                new Point(-17, 5),
+                new Point(chamber2.getX()-3, 4.5)
         );
 
         SequentialCommand preloadAndSpikes = new SequentialCommand(
@@ -202,16 +216,17 @@ public class SpecAutoSpeed extends LinearOpMode {
                 new RunCommand(()-> Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition())),
 
                 new ParallelCommand(
+                        new RunCommand(()->Pika.outtakeSlides.setMaxPower(1)),
                         new FollowTrajectory(follower, spike1Path),
                         new SequentialCommand(
                                 new Wait(400),
-                                new IntakeSampleTeleOp()
+                                new IntakeSampleTeleOp(),
+                                new Wait(80),
+                                new SlidesMove(19000),
+                                new RunCommand(()-> Pika.newClaw.setPivotOrientation(140))
                         )
                 ),
-                new RunCommand(()-> Pika.newClaw.setPivotOrientation(140)),
-                new ParallelCommand(
-                        new SlidesMove(19000)
-                ),
+
                 new Grab(),
                 new ParallelCommand(
                         new RunCommand(()-> follower.pause()),
@@ -223,7 +238,10 @@ public class SpecAutoSpeed extends LinearOpMode {
                         new RunCommand(()-> follower.resume()),
 
                         new FollowTrajectory(follower, spike2Path),
-                        new IntakeSampleTeleOp()
+                        new SequentialCommand(
+                                new IntakeSampleTeleOp()
+//                                new SlidesMove(10000)
+                        )
                 ),
                 new RunCommand(()-> Pika.newClaw.setPivotOrientation(140)),
                 new ParallelCommand(
@@ -233,14 +251,17 @@ public class SpecAutoSpeed extends LinearOpMode {
                 new ParallelCommand(
                         new SlidesMove(14000),
                         new RunCommand(()-> follower.pause()),
-                        new LowPrecisionFollow(lowPrecisionFollower, new Bezier(40, spike2))
+                        new LowPrecisionFollow(lowPrecisionFollower, new Bezier(50, spike2))
                 ),
 
                 new ParallelCommand(
                         new RunCommand(()-> Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition())),
                         new RunCommand(()-> follower.resume()),
                         new FollowTrajectory(follower, spike3Path),
-                        new IntakeSampleTeleOp()
+                        new SequentialCommand(
+                                new IntakeSampleTeleOp()
+//                                new SlidesMove(10000)
+                        )
 
                 ),
                 new RunCommand(()-> Pika.newClaw.setPivotOrientation(140)),
@@ -250,7 +271,7 @@ public class SpecAutoSpeed extends LinearOpMode {
                 ),
                 new Grab(),
                 new ParallelCommand(
-                        new SlidesMove(10000),
+                        new SlidesMove(8000),
                         new RunCommand(()-> follower.pause()),
                         new LowPrecisionFollow(lowPrecisionFollower, new Bezier(30, spike2))
                 ),
@@ -267,21 +288,25 @@ public class SpecAutoSpeed extends LinearOpMode {
 
 
                 new Wait(500),
-                new SlidesMove(17000),
+                new SlidesMove(12000),
                 new RunCommand(()->Pika.newClaw.setClaw(FinalClaw.ClawPosition.CLOSE.getPosition())),
+
                 new ParallelCommand(
                         new PrepareSpecDeposit(),
                         new FollowTrajectory(follower, obsToChamber)
                 ),
+
+
                 new SlidesMove(OuttakeSlides.TurnValue.SPEC_DEPOSIT.getTicks()),
                 new RunCommand(()-> Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition())),
+
                 new ParallelCommand(
                         new FollowTrajectory(follower, chamberToObs),
                         new IntakeSampleSpec()
                 ),
 
                 new Wait(500),
-                new SlidesMove(17000),
+                new SlidesMove(12000),
                 new RunCommand(()->Pika.newClaw.setClaw(FinalClaw.ClawPosition.CLOSE.getPosition())),
                 new ParallelCommand(
                         new PrepareSpecDeposit(),
@@ -296,7 +321,7 @@ public class SpecAutoSpeed extends LinearOpMode {
                 ),
 
                 new Wait(500),
-                new SlidesMove(17000),
+                new SlidesMove(12000),
                 new RunCommand(()->Pika.newClaw.setClaw(FinalClaw.ClawPosition.CLOSE.getPosition())),
                 new ParallelCommand(
                         new PrepareSpecDeposit(),
@@ -310,8 +335,9 @@ public class SpecAutoSpeed extends LinearOpMode {
                         new IntakeSampleSpec()
                 ),
 
+
                 new Wait(500),
-                new SlidesMove(17000),
+                new SlidesMove(12000),
                 new RunCommand(()->Pika.newClaw.setClaw(FinalClaw.ClawPosition.CLOSE.getPosition())),
                 new ParallelCommand(
                         new PrepareSpecDeposit(),
@@ -326,8 +352,8 @@ public class SpecAutoSpeed extends LinearOpMode {
                 )
         );
         follower.pause();
-        Pika.arm.setMaxMovementPower(0.88);
-        follower.setMovementPower(0.86);
+        Pika.arm.setMaxMovementPower(0.96);
+        follower.setMovementPower(movementPower); //0.86
         waitForStart();
 
         preloadAndSpikes.init();
@@ -339,11 +365,11 @@ public class SpecAutoSpeed extends LinearOpMode {
             preloadAndSpikes.update();
 
             follower.update();
-
-//            telemetry.addData("MP: ", follower.getTelemetry());
+//
+//            telemetry.addData("MP: ", follower.isEnd());
 //            telemetry.addData("Loop speed: ", timer.milliseconds());
 //            telemetry.update();
-//
+////
 //            timer.reset();
         }
     }
