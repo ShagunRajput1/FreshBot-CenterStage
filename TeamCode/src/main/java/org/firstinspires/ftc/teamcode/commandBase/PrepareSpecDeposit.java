@@ -25,7 +25,6 @@ public class PrepareSpecDeposit extends SequentialCommand {
                         new RunCommand(()->Pika.outtakeSlides.setMaxPower(0.85))
                 ),
                 new RunCommand(()-> Pika.outtakeSlides.resetEncoder()),
-                new Wait(50),
                 new RunCommand(()-> Pika.newClaw.setClaw(FinalClaw.ClawPosition.CLOSE.getPosition())),
                 new SlidesMove(OuttakeSlides.TurnValue.SPEC_PREP.getTicks())
         );

@@ -179,7 +179,7 @@ public class SpecAutoSpeed extends LinearOpMode {
                 -6,
                 obsZone,
                 new Point(-17, 5),
-                new Point(chamber2.getX()-3, 1.8)
+                new Point(chamber2.getX()-3, 2)
         );
 
 //        Bezier obsToChamber4 = new MergedBezier(
@@ -198,7 +198,7 @@ public class SpecAutoSpeed extends LinearOpMode {
                 -7,
                 obsZone,
                 new Point(-17, 5),
-                new Point(chamber2.getX()-3, 4.5)
+                new Point(chamber2.getX()-3, 4.85)
         );
 
         SequentialCommand preloadAndSpikes = new SequentialCommand(

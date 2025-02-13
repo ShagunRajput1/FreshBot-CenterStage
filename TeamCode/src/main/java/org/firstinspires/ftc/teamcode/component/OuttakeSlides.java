@@ -34,7 +34,7 @@ public class OuttakeSlides {
     public static int retractAmount = 7600;
     public static int extendAmountIntake = 3050;
     private final PIDController slideController = new PIDController(P, I,D); //0.006
-    private final PIDController sampleSlideController = new PIDController(0.008, 0.00325, 0);
+    private final PIDController sampleSlideController = new PIDController(0.008, 0.0029, 0);
     private final double searchForSamplePower = 0.325;
     public static double feedForward = 0.1;
     private final int holdChangeConstant = 5000;

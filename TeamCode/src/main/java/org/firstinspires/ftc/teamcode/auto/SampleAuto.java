@@ -35,7 +35,7 @@ public class SampleAuto extends LinearOpMode {
     Bezier bucket, sample1, sample2, sample3, submersibleIntake, parkPath;
     ElapsedTime timer = new ElapsedTime();
     MotionPlannerEdit follower;
-    public static Point bucketDeposit = new Point(10.3, 11.1);
+    public static Point bucketDeposit = new Point(10.3, 11.2);
     public static Point subBucketDeposit = new Point(9.45, 12); //9.75, 11.65
     Bezier subToBucket = new MergedBezier(
             -45,
@@ -57,7 +57,7 @@ public class SampleAuto extends LinearOpMode {
 
 
     public static Point submersible = new Point(50, -18.25);
-    public static Point parkPoint = new Point(45, -22);
+    public static Point parkPoint = new Point(45, -23.5);
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -79,7 +79,7 @@ public class SampleAuto extends LinearOpMode {
         );
         sample3 = new Bezier(14.6,
                 bucketDeposit,
-                new Point(15.10, 21.6));
+                new Point(15.10, 21.25));
 
         submersibleIntake = new MergedBezier(
                 -90,
@@ -320,7 +320,7 @@ public class SampleAuto extends LinearOpMode {
                 subCycles.init();
             }
 
-            if (timer.seconds() >= 250 && subCycleDone && subCycles.getIndex() == 0 && !emergencyParking) {
+            if (timer.seconds() >= 25 && subCycleDone && subCycles.getIndex() == 0 && !emergencyParking) {
                 subCycles.stop();
                 zeroPlusFour.stop();
                 emergencyPark.init();
