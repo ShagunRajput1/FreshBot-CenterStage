@@ -35,7 +35,7 @@ public class SampleAuto extends LinearOpMode {
     Bezier bucket, sample1, sample2, sample3, submersibleIntake, parkPath;
     ElapsedTime timer = new ElapsedTime();
     MotionPlannerEdit follower;
-    public static Point bucketDeposit = new Point(10.3, 11.2);
+    public static Point bucketDeposit = new Point(10.1, 11.6);
     public static Point subBucketDeposit = new Point(9.45, 12); //9.75, 11.65
     Bezier subToBucket = new MergedBezier(
             -45,
@@ -75,11 +75,11 @@ public class SampleAuto extends LinearOpMode {
         );
         sample2 = new Bezier(0,
                 bucketDeposit,
-                new Point(12.2966, 16)
+                new Point(12.2966, 17.2)
         );
         sample3 = new Bezier(14.6,
                 bucketDeposit,
-                new Point(15.10, 21.25));
+                new Point(15.10, 22.5));
 
         submersibleIntake = new MergedBezier(
                 -90,
@@ -294,7 +294,7 @@ public class SampleAuto extends LinearOpMode {
                 new PreparePark(),
                 new FollowTrajectory(follower, parkPath)
         );
-
+        follower.setMovementPower(0.8);
 
         waitForStart();
         zeroPlusFour.init();

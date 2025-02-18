@@ -16,7 +16,7 @@ public class SpecPark extends SequentialCommand {
 //            new RunCommand(() -> Pika.claw.setArmPitch(Claw.ArmPitch.DOWN.getPosition())),
                 new ParallelCommand(
                         new RunCommand(() -> Pika.newClaw.setClaw(FinalClaw.ClawPosition.OPEN.getPosition())),
-                        new RunCommand(() -> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.RETRACT.getPosition())),
+                        new RunCommand(() -> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.DETECT.getPosition())),
                         new RunCommand(()-> Pika.newClaw.setPivotOrientation(180)),
                         new RunCommand(()-> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.RETRACT.getPosition()))
                 ),

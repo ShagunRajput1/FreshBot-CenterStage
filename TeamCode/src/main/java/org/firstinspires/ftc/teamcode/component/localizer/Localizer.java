@@ -78,9 +78,9 @@ public class Localizer {
         reset();
     }
 
-    public Localizer(OpMode opMode, HardwareMap hardwareMap){
+    public Localizer(LinearOpMode opMode, HardwareMap hardwareMap){
 
-//        imu = new Imu(hardwareMap);
+        imu = new Imu(hardwareMap);
 //        imu.initImuThread(opMode);
         allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : allHubs) {

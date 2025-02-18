@@ -68,7 +68,7 @@ public class MotionPlannerEdit {
     double radius;
     public final static double THE_HOLY_CONSTANT = 0.0006; //0.001
 
-    public static double kStatic_X = 0.14; //.19
+    public static double kStatic_X = 0.17; //.19
     public static double kStatic_Y = 0.218; //.19
     public static double kStatic_Turn = 0.1; //.19
     double ac;

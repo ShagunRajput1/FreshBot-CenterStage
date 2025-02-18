@@ -27,12 +27,11 @@ public class Pika {
     public static Camlight limelight;
     public static Localizer localizer;
 
-    public static void init(HardwareMap hwMap, OpMode opMode, boolean teleOp) {
+    public static void init(HardwareMap hwMap, LinearOpMode opMode, boolean teleOp) {
 
         movementPower = 0.8;
         hardwareMap = hwMap;
         arm = new Arm();
-        arm.init(hardwareMap, teleOp);
         limelight = new Camlight();
         limelight.init(hardwareMap);
         localizer = new Localizer(opMode, hardwareMap);
@@ -41,6 +40,7 @@ public class Pika {
         newClaw.init(hardwareMap);
         outtakeSlides = new OuttakeSlides();
         outtakeSlides.init(hardwareMap, teleOp);
+        arm.init(hardwareMap, teleOp);
         if (teleOp)
             newClaw.setMiniPitch(FinalClaw.MiniPitch.BEFORE_GRAB.getPosition());
 

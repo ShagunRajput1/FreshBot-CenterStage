@@ -49,7 +49,7 @@ public class OuttakeSlides {
     public enum TurnValue {
         RETRACTED(0),
         HANG_RETRACT(6000),
-        BUCKET2(40500),
+        BUCKET2(39500),
         BUCKET2_TELEOP(36500),
         HANG(24000), //880
         MAX_EXTENSION_UP(42000),
@@ -283,6 +283,15 @@ public class OuttakeSlides {
             return true;
         }
         return false;
+    }
+
+    public void forceRetract() {
+        slide1.setPower(power);
+        slide2.setPower(-power);
+        slide1.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        slide2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        slide1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        slideController.reset();
     }
 
     public boolean reachedHorizontalLimit() {

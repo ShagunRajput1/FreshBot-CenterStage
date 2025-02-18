@@ -43,7 +43,6 @@ public class Imu {
                 }
                 while (opMode.opModeIsActive() && !opMode.isStopRequested()) {
                     heading = imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
-                    angularVelocity = imu.getRobotAngularVelocity(AngleUnit.DEGREES).xRotationRate;
                 }
 
             }
@@ -66,7 +65,7 @@ public class Imu {
         imu.initialize(new IMU.Parameters(
                         new RevHubOrientationOnRobot(
                                 RevHubOrientationOnRobot.LogoFacingDirection.UP,
-                                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD
+                                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
                         )
                 )
         );

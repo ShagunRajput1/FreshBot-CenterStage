@@ -12,10 +12,11 @@ import org.firstinspires.ftc.teamcode.core.Pika;
 public class ActualTeleOpHang extends SequentialCommand {
     public ActualTeleOpHang() {
         super(
+                new RunCommand(()-> Pika.newClaw.setPivotOrientation(180)),
+                new Wait(100),
                 new ParallelCommand(
                         new RunCommand(()-> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.RETRACT.getPosition())),
-                        new RunCommand(() -> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.RETRACT.getPosition())),
-                        new RunCommand(()-> Pika.newClaw.setPivotOrientation(180))
+                        new RunCommand(() -> Pika.newClaw.setMiniPitch(FinalClaw.MiniPitch.RETRACT.getPosition()))
                 ),
                 new Wait(300),
                 new SlidesMove(OuttakeSlides.TurnValue.RETRACTED.getTicks()),

@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.teamcode.core.Pika;
 
 import java.util.List;
 
@@ -36,11 +37,13 @@ public class Camlight {
     public double deltaY;
     public double deltaX;
     public boolean tiltedLeft;
+    public int estimatedSlideExtension;
+    public double estimatedStrafe;
     int pipelineIndex;
     public static boolean red;
 
     private enum Pipeline {
-        YELLOW_AND_RED(0), YELLOW_AND_BLUE(1), NeuralDetector(5), AprilTag(7);
+        YELLOW_AND_RED(0), YELLOW_AND_BLUE(1), NeuralDetector(5), AprilTag(7), SNAP(6);
         private final int index;
         Pipeline(int val) {
             this.index = val;
@@ -58,7 +61,7 @@ public class Camlight {
         if (red)
             limelight.pipelineSwitch(Pipeline.YELLOW_AND_RED.index); // or this3
         else
-            limelight.pipelineSwitch(Pipeline.YELLOW_AND_BLUE.index);
+            limelight.pipelineSwitch(Pipeline.YELLOW_AND_RED.index);
 
 
         limelight.start();
@@ -79,6 +82,7 @@ public class Camlight {
         LLResult result = limelight.getLatestResult();
         tX = 0;
         tY = 0;
+        estimatedSlideExtension = 0;
         targetArea = 0;
         if (result!=null && result.isValid()) {
             List<LLResultTypes.ColorResult> colorRes = result.getColorResults();
@@ -92,6 +96,8 @@ public class Camlight {
                 List<List<Double>> newCorners = colorRes.get(0).getTargetCorners().subList(0, 4);
                 tX = colorRes.get(0).getTargetXDegrees();
                 tY = colorRes.get(0).getTargetYDegrees();
+                estimatedSlideExtension = (int) (3.7629*(tX) + 105.28623)*100 + Pika.outtakeSlides.currentPos;
+                estimatedStrafe = 0.1625*(tY) - 0.101127;
                 cornerIndices = sortCorners(newCorners);
                 targetArea = colorRes.get(0).getTargetArea();
                 if (newCorners.get(cornerIndices[0]).get(0)-newCorners.get(cornerIndices[1]).get(0)
@@ -236,7 +242,9 @@ public class Camlight {
         return "Tx: " + tX +
                 "\nTy: " + tY +
                 "\nArea: " + targetArea +
-                "\nAngle: " + angle;
+                "\nAngle: " + angle +
+                "\nEstimated Slide Extension: " + estimatedSlideExtension +
+                "\nEstimated Strafe: " + estimatedStrafe;
     }
 
     public void stop() {

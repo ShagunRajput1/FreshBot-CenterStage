@@ -24,6 +24,9 @@ public class NewClawTest extends LinearOpMode {
         ToggleButtonReader xReader = new ToggleButtonReader(
                 driverOp, GamepadKeys.Button.X
         );
+        ToggleButtonReader dpad_left_reader = new ToggleButtonReader(
+                driverOp, GamepadKeys.Button.DPAD_LEFT
+        );
         waitForStart();
 
         while (opModeIsActive()) {
@@ -59,10 +62,10 @@ public class NewClawTest extends LinearOpMode {
 
 
             if (gamepad1.right_trigger>0 && pivotPos<=180) {
-                pivotPos+=0.05;
+                pivotPos+=1;
             }
             else if (gamepad1.left_trigger>0 && pivotPos>0) {
-                pivotPos -=0.05;
+                pivotPos -=1;
 
             }
             Pika.newClaw.setPivotOrientation(pivotPos);
@@ -73,6 +76,7 @@ public class NewClawTest extends LinearOpMode {
             Pika.arm.update();
 
             xReader.readValue();
+            telemetry.addData("SlidePos: ", Pika.outtakeSlides.getCurrentPosition());
             telemetry.addData("PitchAPos: ", pos);
             telemetry.addData("PitchBPos: ", (1-pos));
             telemetry.addData("MiniPitchPos: ", miniPitchPos);

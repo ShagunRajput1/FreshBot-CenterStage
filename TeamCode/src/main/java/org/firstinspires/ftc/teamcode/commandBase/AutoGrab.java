@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.core.Pika;
 public class AutoGrab extends SequentialCommand{
     public AutoGrab() {
         super(
+                new Wait(200),
                 new RunCommand(() -> Pika.newClaw.setPivotOrientation(Pika.limelight.getSampleOrientation())),
                 new Wait(250),
                 new RunCommand(() -> Pika.newClaw.setArmPitch(FinalClaw.ArmPitch.GRAB.getPosition())),

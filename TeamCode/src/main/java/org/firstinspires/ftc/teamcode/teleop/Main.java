@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.commandBase.ActualTeleOpHang;
-import org.firstinspires.ftc.teamcode.commandBase.AutoGrab;
 import org.firstinspires.ftc.teamcode.commandBase.AutoIntakeFromSubBasic;
 import org.firstinspires.ftc.teamcode.commandBase.Drop;
 import org.firstinspires.ftc.teamcode.commandBase.GrabSpec;
@@ -143,6 +142,12 @@ public class Main extends LinearOpMode {
             double theta = Math.toDegrees(Math.atan2(driveY, driveX));
             Pika.movementPower = movementPower;
             Pika.drivetrain.drive(magnitude, theta, driveTurn, Pika.movementPower, Pika.getVoltage());
+
+            if (gamepad2.dpad_left) {
+                slidePositionMode = false;
+//                Pika.outtakeSlides.forceRetract();
+            }
+
 
             if (modeButton.wasJustReleased()) {
                 bucketMode = !bucketMode;
