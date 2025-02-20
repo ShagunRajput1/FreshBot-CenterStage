@@ -12,10 +12,14 @@ import org.firstinspires.ftc.teamcode.component.Intake;
 import org.firstinspires.ftc.teamcode.component.Outtake;
 import org.firstinspires.ftc.teamcode.component.OuttakeSlides;
 import org.firstinspires.ftc.teamcode.component.localizer.Localizer;
+import org.firstinspires.ftc.teamcode.component.localizer.Pinpoint;
 import org.firstinspires.ftc.teamcode.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.drivetrain.MecanumDrive;
 
 public class Pika {
+    static double xOffset = 0;
+    static double yOffset = 0;
+
     public static HardwareMap hardwareMap;
     public static MecanumDrive drivetrain;
     public static double movementPower;
@@ -26,8 +30,13 @@ public class Pika {
     public static Arm arm;
     public static Camlight limelight;
     public static Localizer localizer;
+    public static Pinpoint pinpoint;
 
     public static void init(HardwareMap hwMap, LinearOpMode opMode, boolean teleOp) {
+//        pinpoint = hardwareMap.get(Pinpoint.class, "odo");
+//        pinpoint.setOffsets(xOffset, yOffset);
+//        pinpoint.setEncoderResolution(Pinpoint.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+//        pinpoint.resetPosAndIMU();
 
         movementPower = 0.8;
         hardwareMap = hwMap;

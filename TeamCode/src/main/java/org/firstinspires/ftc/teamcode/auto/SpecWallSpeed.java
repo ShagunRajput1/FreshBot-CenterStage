@@ -167,7 +167,7 @@ public class SpecWallSpeed extends LinearOpMode {
                 0,
                 obsZone,
                 new Point(-17, 5),
-                new Point(chamber2.getX()-2.2, -3.5)
+                new Point(chamber2.getX()-2.5, -3.5)
         );
 
 //        Bezier obsToChamber3 = new MergedBezier(

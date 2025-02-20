@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.component.localizer;
 
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.component.Imu;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
 import java.util.List;
+import java.util.Locale;
 
 public class Localizer {
 

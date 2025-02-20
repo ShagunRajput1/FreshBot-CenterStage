@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.commandBase.Grab;
 import org.firstinspires.ftc.teamcode.commandBase.IntakeSample;
 import org.firstinspires.ftc.teamcode.commandBase.IntakeSampleTeleOp;
 import org.firstinspires.ftc.teamcode.commandBase.PrepareOuttakeAuto;
+import org.firstinspires.ftc.teamcode.commandBase.PrepareOuttakeAutoParallel;
 import org.firstinspires.ftc.teamcode.commandBase.PrepareOuttakeBasket;
 import org.firstinspires.ftc.teamcode.commandBase.PreparePark;
 import org.firstinspires.ftc.teamcode.commandBase.PrepareSpecDeposit;
@@ -31,7 +32,7 @@ import org.firstinspires.ftc.teamcode.pathing.Point;
 import org.firstinspires.ftc.teamcode.teleop.SohamsRobot;
 
 @Autonomous
-public class SampleAuto extends LinearOpMode {
+public class SampleSpeed extends LinearOpMode {
     Bezier bucket, sample1, sample2, sample3, submersibleIntake, parkPath;
     ElapsedTime timer = new ElapsedTime();
     MotionPlannerEdit follower;
@@ -128,7 +129,7 @@ public class SampleAuto extends LinearOpMode {
                 ),
                 new Wait(100),
                 new RunCommand(()->follower.pause()),
-                new PrepareOuttakeAuto(),
+                new PrepareOuttakeAutoParallel(),
                 new DepositSample(OuttakeSlides.TurnValue.BUCKET2.getTicks()),
                 new RunCommand(()->follower.resume()),
                 new ParallelCommand(
@@ -160,7 +161,7 @@ public class SampleAuto extends LinearOpMode {
                                         bucketDeposit)),
                                 new RunCommand(()->follower.pause())
                         ),
-                        new PrepareOuttakeAuto()
+                        new PrepareOuttakeAutoParallel()
                 ),
 
                 new DepositSample(OuttakeSlides.TurnValue.BUCKET2.getTicks()),
@@ -195,7 +196,7 @@ public class SampleAuto extends LinearOpMode {
                                         bucketDeposit)),
                                 new RunCommand(()->follower.pause())
                         ),
-                        new PrepareOuttakeAuto()
+                        new PrepareOuttakeAutoParallel()
                 ),
 
                 new DepositSample(OuttakeSlides.TurnValue.BUCKET2.getTicks()),
@@ -227,7 +228,7 @@ public class SampleAuto extends LinearOpMode {
                         ),
                         new SequentialCommand(
                                 new Wait(300),
-                                new PrepareOuttakeAuto()
+                                new PrepareOuttakeAutoParallel()
                         )
                 ),
                 new DepositSample(OuttakeSlides.TurnValue.BUCKET2.getTicks()),
@@ -308,11 +309,9 @@ public class SampleAuto extends LinearOpMode {
 
             follower.update();
             Pika.arm.update();
-            if (Pika.arm.isFinished())
-                Pika.outtakeSlides.update();
-            else {
-                Pika.outtakeSlides.freeMove();
-            }
+
+            Pika.outtakeSlides.update();
+
 
             if (zeroPlusFour.isFinished() && !subCycleDone) {
                 follower.setMovementPower(0.85);
